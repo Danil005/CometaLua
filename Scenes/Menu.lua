@@ -10,9 +10,9 @@ function scene:create(event)
     background = display.newImageRect( scene_group, "Sprites/menyu_fon_2.png",display.contentWidth,display.contentHeight)
     background.x = display.contentCenterX
     background.y = display.contentCenterY
-    image_comet = display.newImageRect( scene_group,"Sprites/kometa_staticheskaya_1.tif",90,400)
-    image_comet.x = display.contentCenterX
-    image_comet.y = display.contentCenterY
+    --image_comet = display.newImageRect( scene_group,"Sprites/kometa_staticheskaya_1.tif",90,400)
+    --image_comet.x = display.contentCenterX
+    --image_comet.y = display.contentCenterY
 end
 
 function scene:show(event)
