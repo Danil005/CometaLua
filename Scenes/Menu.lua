@@ -7,12 +7,13 @@ local image_comet = nil
 
 function scene:create(event)
     local scene_group = self.view
-    background = display.newImageRect( scene_group, "Sprites/menyu_fon_2.png",display.contentWidth,display.contentHeight)
+    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
     background.x = display.contentCenterX
     background.y = display.contentCenterY
-    image_comet = display.newImageRect( scene_group,"Sprites/kometa_staticheskaya_1.tif",90,400)
+    image_comet = display.newImageRect( scene_group,"Sprites/sprite_comet.tif",40,100)
+
     image_comet.x = display.contentCenterX
-    image_comet.y = display.contentCenterY
+    image_comet.y = display.contentCenterY * 1.5
 end
 
 function scene:show(event)
