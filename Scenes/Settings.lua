@@ -1,3 +1,5 @@
+-- Scene Settings
+
 local composer = require("composer")
 
 local scene = composer.newScene()
@@ -10,10 +12,12 @@ function scene:create(event)
     background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
     background.x = display.contentCenterX
     background.y = display.contentCenterY
-    image_comet = display.newImageRect( scene_group,"Sprites/sprite_comet.tif",40,100)
 
-    image_comet.x = display.contentCenterX
-    image_comet.y = display.contentCenterY * 1.5
+    local myText = display.newText( "Hello", 0, 0, native.systemFont, 51 )
+    myText.x = display.contentWidth  ; myText.y = display.contentHeight +5
+    print(myText)
+    myText:setFillColor( 1, 1, 1 )
+    myText.anchorX = 0
 end
 
 function scene:show(event)
