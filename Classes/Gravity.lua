@@ -82,10 +82,15 @@ function gravity(coords)
     legs = self.get_legs(coords)
     hype = self.get_hype(legs)
     cos_angle = legs[0]/hype
-    move_comet = -self.get_strength(coords)*cos_angle if coords[0] > self.center[0] else\
-        self.get_strength(coords)*cos_angle
+
+    move_comet = self.get_strength(coords)*cos_angle
+    if coords[0] > self.center[0] then
+        move_comet = -move_comet
+    end
     strength_gravity = 1 - self.distance(coords)/(self.center[1]+self.zones[1][0])
-    move_planet = strength_gravity*self.get_strength(coords) if coords[1] > self.center[1] else 0
+    if (coords[1] > self.center[1]) then
+      move_planet = strength_gravity*self.get_strength(coords)
+    end
 
     return [round(move_comet), round(move_planet)]
 end
