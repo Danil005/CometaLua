@@ -11,7 +11,7 @@ local button_back = nil
 
 function backTouch(event)
   if(event.phase == "began") then
-    print("touch")
+    composer.gotoScene("Scenes.menu")
   end
 end
 
@@ -22,8 +22,8 @@ function scene:create(event)
     background.y = display.contentCenterY
 
     button_back = display.newImageRect( scene_group, "Sprites/knopka_nazad.png", 25,35)
-    button_back.x = 50
-    button_back.y = 30
+    button_back.x = display.contentWidth - 270
+    button_back.y = display.contentHeight - 450
 
 end
 
