@@ -16,7 +16,6 @@ local soundOfButton= audio.loadSound("audio/buttonsInMenu.wav")
 bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.wav")
 audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
 audio.fade( { channel, time=198, volume=0.5 } )
-]]
 
 local function enterFrame(event)
     if (background.y < HEIGHT*1.5) then

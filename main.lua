@@ -9,3 +9,5 @@ HEIGHT = display.contentHeight
 
 
 composer.gotoScene("Scenes.Menu")
+
+flagAudio = false

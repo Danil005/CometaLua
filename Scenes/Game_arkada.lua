@@ -23,7 +23,10 @@ local background = nil
 local background2 = nil
 local cmt = nil
 local speed_comet = 2
+local speed_planets = 0.5
+local cof = 4 -- Коофицент для получения кол-во очков
 local is_moved = false
+local score = 0
 local planet = nil
 local speed_planets = 1
 local speed_background = 0.5
@@ -99,6 +102,31 @@ local function generate_planet()
     planet.x = display.contentCenterX
     planet.y = 0
 
+local M = {}
+
+M.score = 0  -- Set the score to 0 initially
+
+function M.init( options )
+
+    local customOptions = options or {}
+    local opt = {}
+    opt.fontSize = customOptions.fontSize or 24
+    opt.font = customOptions.font or native.systemFont
+    opt.x = customOptions.x or display.contentCenterX
+    opt.y = customOptions.y or opt.fontSize*0.5
+    opt.maxDigits = customOptions.maxDigits or 6
+    opt.leadingZeros = customOptions.leadingZeros or false
+
+    local prefix = ""
+    if ( opt.leadingZeros ) then
+        prefix = "0"
+    end
+    M.format = "%" .. prefix .. opt.maxDigits .. "d"
+
+    -- Create the score display object
+    M.scoreText = display.newText( string.format( M.format, 0 ), opt.x, opt.y, opt.font, opt.fontSize )
+
+    return M.scoreText
 end
 
 local function count_numbers()
