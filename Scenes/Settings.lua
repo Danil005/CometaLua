@@ -1,5 +1,5 @@
 -- Scene Settings
-
+local json = require("json")
 local composer = require("composer")
 local Menu = require("Scenes.Menu")
 local scene = composer.newScene()
@@ -15,6 +15,7 @@ local button_sounds_off = nil
 
 local is_mute_musics = false
 local is_mute_sounds = false
+
 
 local function backTouch(event)
     if(event.phase == "began") then
@@ -51,6 +52,7 @@ local function mute_sound(event)
     end
 end
 
+
 function scene:create(event)
     local scene_group = self.view
     background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
@@ -83,15 +85,26 @@ end
 
 function scene:show(event)
     local scene_group = self.view
-    settings = loadSettings("settings.json")
-    is_mute_musics = settings.flagAudio
+    result = true;
+    result = load_settings()
+    print(result)
+    is_mute_musics = not result
+    print(is_mute_musics)
+    if(is_mute_musics) then
+        button_musics_off.alpha = 1
+        button_musics_on.alpha = 0
+        audio.pause(bgMusicInMenu)
+    else
+        button_musics_off.alpha = 0
+        button_musics_on.alpha = 1
+        audio.resume(bgMusicInMenu)
+    end
 
     if(event.phase == "did") then
       button_back:addEventListener("touch", backTouch)
 
       button_musics_on:addEventListener("touch", mute_musics)
       button_musics_off:addEventListener("touch",mute_musics)
-
       button_sounds_on:addEventListener("touch",mute_sound)
       button_sounds_off:addEventListener("touch",mute_sound)
 
@@ -104,6 +117,20 @@ function scene:show(event)
     end
 end
 
+function load_settings()
+      local path = system.pathForFile( "settings.json" )
+      local file = io.open( path, "r" )
+      if file then
+          local saveData = file:read( "*a" )
+          --print(saveData)
+          io.close( file )
+          local jsonRead = json.decode(saveData)
+          result = jsonRead.flagAudio
+          return result
+        end
+      return nil
+  end
+
 function scene:hide(event)
     button_back:removeEventListener("touch", backTouch)
     button_musics_on:removeEventListener("touch", mute_musics)
@@ -113,6 +140,8 @@ function scene:hide(event)
 
     display.remove(title_scene)
 end
+
+
 
 scene:addEventListener("create",scene)
 scene:addEventListener("show",scene)
