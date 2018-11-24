@@ -6,11 +6,12 @@ local scene = composer.newScene()
 
 local background = nil
 local image_comet = nil
-
+local soundOfButton = audio.loadSound("audio/buttonsInMenu.wav")
 local button_back = nil
 
 function backTouch(event)
   if(event.phase == "began") then
+    audio.play(soundOfButton)
     composer.gotoScene("Scenes.menu")
   end
 end

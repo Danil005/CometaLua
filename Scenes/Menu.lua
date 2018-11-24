@@ -9,15 +9,30 @@ local button_back = nil
 local button_settings = nil
 local button_arcade = nil
 local button_score_mode = nil
+local soundOfButton= audio.loadSound("audio/buttonsInMenu.wav")
+local bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.wav")
+audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
+audio.fade( { channel, time=198, volume=0.5 } )
 
 function scoreModeTouch(event)
   if(event.phase == "began") then
+    audio.stop()
+    audio.play( soundOfButton)
     composer.gotoScene("Scenes.Game_arkada")
+  end
+end
+
+function arcadeTouch(event)
+  if(event.phase == "began") then
+    audio.stop(bgMusicInMenu)
+    audio.play(soundOfButton)
+    print("touch")
   end
 end
 
 function settingsTouch(event)
   if(event.phase == "began") then
+    audio.play( soundOfButton)
     composer.gotoScene("Scenes.Settings")
   end
 end
@@ -53,12 +68,14 @@ function scene:show(event)
   if(event.phase == "did") then
     button_settings:addEventListener("touch", settingsTouch)
     button_score_mode:addEventListener("touch", scoreModeTouch)
+    button_arcade:addEventListener("touch", arcadeTouch)
   end
 end
 
 function scene:hide(event)
   button_settings:removeEventListener("touch", settingsTouch)
   button_score_mode:removeEventListener("touch", scoreModeTouch)
+  button_arcade:removeEventListener("touch", arcadeTouch)
 end
 
 scene:addEventListener("create",scene)

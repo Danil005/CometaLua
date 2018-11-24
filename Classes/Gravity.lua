@@ -32,7 +32,7 @@ end
 function Gravity:get_legs(coords)
     leg_a = abs(self.center[0] - coords[0])  -- Катет А
     leg_b = abs(self.center[1] - coords[1])  -- Катет B
-    return [leg_a, leg_b]
+    return {leg_a, leg_b}
 end
 
 -- Гипотенуза треугольника.
@@ -48,17 +48,18 @@ end
 -- Вход: координаты кометы (x, y).
 -- Выход: -1/1
 function Gravity:get_location(coords)
-    if self.center[0] - coords[0] >= 0:
+    if self.center[0] - coords[0] >= 0 then
         return 1
-    else:
+    else
         return -1
+    end
 end
 
 -- Дистанция от координаты до центра.
 -- Вход: координаты кометы (x, y).
 -- Выход: расстояние от кометы до центра в пикселях.
 function Gravity:distance(coords)
-    return int(sqrt((coords[0] - self.center[0]) ** 2 + (coords[1] - self.center[1]) ** 2))
+    return int(sqrt((coords[0] - self.center[0]) *(coords[0] - self.center[0]) + (coords[1] - self.center[1]) *(coords[1] - self.center[1])))
 end
 
 -- Узнать силу, с которой гравитация будет действовать.
@@ -92,5 +93,5 @@ function gravity(coords)
       move_planet = strength_gravity*self.get_strength(coords)
     end
 
-    return [round(move_comet), round(move_planet)]
+    return {round(move_comet), round(move_planet)}
 end

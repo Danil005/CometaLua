@@ -1,4 +1,5 @@
 local composer = require("composer")
+local gravity = require("Classes.Gravity")
 local scene = composer.newScene()
 
 local background = nil
@@ -6,6 +7,21 @@ local comet = nil
 local speed_comet = 2
 local is_moved = false
 local planet = nil
+<<<<<<< HEAD
+local soundOfComet = audio.loadSound("audio/soundOfComet.mp3")
+local backgroundMusic = audio.loadStream("audio/backgroundMusic.mp3")
+audio.play( backgroundMusic, {channel, loops=-1, fadein=50000 })
+audio.fade( { channel=1, time=6680, volume=0.5 } )
+function playAudio(event)
+  if(event.phase == "ended") then
+    audio.setVolume(0)
+    --audio.play( soundOfComet )
+  end
+end
+=======
+local gravity_planet = nil
+
+>>>>>>> master
 
 local function moved_comet(x)
     if (x > comet.x and is_moved) then
@@ -22,7 +38,14 @@ local function moved_comet(x)
 end
 
 local function generate_planet()
+<<<<<<< HEAD
+    local radius = math.random(20,60)
+    planet = display.newCircle(display.contentCenterX,0,radius)
+    planet:setFillColor(100/255,70/255,255/255)
+    gravity_planet = Gravity:new({contentCenterX,0},{{5,4},{10,2}})
+=======
 
+>>>>>>> master
 end
 
 local function controller(event)
@@ -37,7 +60,15 @@ end
 
 --Бесконечный цикл
 local function enterFrame(event)
-
+    if (planet == nil) then
+        generate_planet()
+    else
+        planet.y = planet.y + 0.5
+    end
+    if (planet.y > HEIGHT) then
+        display.remove(planet)
+        planet = nil
+    end
 end
 
 function scene:create(event)
@@ -55,12 +86,14 @@ function scene:show(event)
     if (event.phase == "did") then
         Runtime:addEventListener("enterFrame", enterFrame) -- Добавление бесконечного цикла
         background:addEventListener("touch",controller)
+        background:addEventListener("touch", playAudio)
     end
 end
 
 function scene:hide(event)
     Runtime:removeEventListener("enterFrame",enterFrame)
     background:removeEventListener("touch",controller)
+    background:removeEventListener("touch", soundOfComet)
 end
 
 scene:addEventListener("create",scene)
