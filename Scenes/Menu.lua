@@ -99,7 +99,7 @@ function scene:show(event)
       audio.resume(bgMusicInMenu)
   end
   if(event.phase == "did") then
-    cmt = comet:new("noname", 4, display.contentCenterX+42, display.contentCenterY)
+    cmt = comet:new("default", 4, display.contentCenterX+42, display.contentCenterY)
     cmt:new_list(120)
     for i = 1, 20 do
       cmt:move()

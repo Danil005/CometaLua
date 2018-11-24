@@ -1,25 +1,20 @@
 comet = {}
 
--- local composer = require("composer")
-
--- local scene = composer.newScene()
-
--- Дохуя
-local comet_anim_options =
-{
-  width =500,
-  height = 2500,
-  numFrames = 10,
-  sheetContentWidth = 5000,
-  sheetContentHeight = 2500
-}
-
 function comet:new(folder_name, power, x, y)
     local obj= {}
     obj.folder = folder_name -- Местоположение текущего скина
     obj.scale = 0.1
     obj.power = power
-
+    -- Дохуя
+    local comet_anim_options =
+    {
+      width =500,
+      height = 2500,
+      numFrames = 10,
+      sheetContentWidth = 5000,
+      sheetContentHeight = 2500
+    }
+    print("images/" .. folder_name .. "/forward.png")
     local forward_comet_sheet = graphics.newImageSheet("images/" .. folder_name .. "/forward.png", comet_anim_options)
     local left_comet_sheet_1 = graphics.newImageSheet( "images/" .. folder_name .. "/left_1.png", comet_anim_options)
     local right_comet_sheet_1 = graphics.newImageSheet( "images/" .. folder_name .. "/right_1.png", comet_anim_options)
@@ -68,7 +63,7 @@ function comet:new(folder_name, power, x, y)
         loopCount = 0
       }
     }
-    obj.sprite = display.newSprite(forward, comet_data) -- Сам спрайт кометы
+    obj.sprite = display.newSprite(forward_comet_sheet, comet_data) -- Сам спрайт кометы
     obj.sprite.x = x
     obj.sprite.y = y
     obj.poses_list = {} -- здесь будут позиции для плавной анимации

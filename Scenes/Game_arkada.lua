@@ -223,7 +223,7 @@ end
 
 function scene:show(event)
     if (event.phase == "did") then
-        cmt = comet:new("noname",2,display.contentCenterX,display.contentCenterY*1.5)
+        cmt = comet:new("default",2,display.contentCenterX,display.contentCenterY*1.5)
         cmt.sprite:scale(0.5,0.5)
         cmt:new_list(120)
         for i = 1, 20 do
