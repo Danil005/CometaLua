@@ -1,6 +1,7 @@
 -- Scene Settings
 
 local composer = require("composer")
+local Menu = require("Scenes.Menu")
 local scene = composer.newScene()
 
 local background = nil
@@ -18,7 +19,7 @@ local is_mute_sounds = false
 local function backTouch(event)
     if(event.phase == "began") then
       audio.play(soundOfButton)
-      composer.gotoScene("Scenes.menu")
+      composer.gotoScene("Scenes.Menu")
     end
 end
 
@@ -28,9 +29,11 @@ local function mute_musics(event)
         if(is_mute_musics) then
             button_musics_off.alpha = 1
             button_musics_on.alpha = 0
+            audio.pause(bgMusicInMenu)
         else
             button_musics_off.alpha = 0
             button_musics_on.alpha = 1
+            audio.resume(bgMusicInMenu)
         end
     end
 end
