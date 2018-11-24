@@ -11,10 +11,17 @@ local cmt = nil
 local button_settings = nil
 local button_arcade = nil
 local button_score_mode = nil
+<<<<<<< HEAD
 local is_mute_musics = false
 local is_mute_sounds = false
 local soundOfButton= audio.loadSound("audio/buttonsInMenu.mp3")
 bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.mp3")
+=======
+local start_comet = false
+
+local soundOfButton= audio.loadSound("audio/buttonsInMenu.wav")
+bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.wav")
+>>>>>>> master
 audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
 audio.fade( { channel, time=198, volume=0.5 } )
 
