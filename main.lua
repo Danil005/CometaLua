@@ -8,6 +8,11 @@ WIDTH = display.contentWidth
 HEIGHT = display.contentHeight
 
 
+<<<<<<< Updated upstream
 composer.gotoScene("Scenes.Menu")
 
 flagAudio = false
+=======
+--composer.gotoScene("Scenes.Menu")
+require("Classes.Comet")
+>>>>>>> Stashed changes
