@@ -7,8 +7,26 @@ local comet = nil
 local speed_comet = 2
 local is_moved = false
 local planet = nil
+<<<<<<< HEAD
+<<<<<<< HEAD
+local soundOfComet = audio.loadSound("audio/soundOfComet.mp3")
+local backgroundMusic = audio.loadStream("audio/backgroundMusic.mp3")
+audio.play( backgroundMusic, {channel, loops=-1, fadein=50000 })
+audio.fade( { channel=1, time=6680, volume=0.5 } )
+function playAudio(event)
+  if(event.phase == "ended") then
+    audio.setVolume(0)
+    --audio.play( soundOfComet )
+  end
+end
+=======
 local gravity_planet = nil
 
+>>>>>>> master
+=======
+local gravity_planet = nil
+
+>>>>>>> master
 
 local function moved_comet(x)
     if (x > comet.x and is_moved) then
@@ -71,12 +89,14 @@ function scene:show(event)
     if (event.phase == "did") then
         Runtime:addEventListener("enterFrame", enterFrame) -- Добавление бесконечного цикла
         background:addEventListener("touch",controller)
+        background:addEventListener("touch", playAudio)
     end
 end
 
 function scene:hide(event)
     Runtime:removeEventListener("enterFrame",enterFrame)
     background:removeEventListener("touch",controller)
+    background:removeEventListener("touch", soundOfComet)
 end
 
 scene:addEventListener("create",scene)
