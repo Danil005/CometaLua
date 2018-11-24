@@ -9,7 +9,6 @@ local background3 = nil
 local background4 = nil
 local cmt = nil
 local button_settings = nil
-local button_arcade = nil
 local button_score_mode = nil
 local soundOfButton= audio.loadSound("audio/buttonsInMenu.mp3")
 bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.mp3")
@@ -74,15 +73,9 @@ function scene:create(event)
     button_settings = display.newImageRect( scene_group,"Sprites/knopka_nastroyki.png", 35,35)
     button_settings.x = 265
     button_settings.y = 30
-    button_score_mode = display.newImageRect( scene_group,"Sprites/rezhim_na_ochki.png", 205,45)
+    button_score_mode = display.newImageRect( scene_group,"Sprites/rezhim_vyzhivanie.png", 205,45)
     button_score_mode.x = display.contentCenterX
-    button_score_mode.y = display.contentCenterY*1.5
-    button_arcade = display.newImageRect( scene_group,"Sprites/rezhim_arkada.png", 205,45)
-    button_arcade.x = display.contentCenterX
-    button_arcade.y = display.contentCenterY*1.74
-    --image_comet = display.newImageRect( scene_group,"Sprites/sprite_comet.tif",40,100)
-    --image_comet.x = display.contentCenterX
-    --image_comet.y = display.contentCenterY * 1.5
+    button_score_mode.y = display.contentCenterY*1.7
 
 
 end
@@ -107,7 +100,6 @@ function scene:show(event)
     cmt:animate("forward")
     button_settings:addEventListener("touch", settingsTouch)
     button_score_mode:addEventListener("touch", scoreModeTouch)
-    button_arcade:addEventListener("touch", arcadeTouch)
     Runtime:addEventListener("enterFrame",enterFrame)
   end
 end
@@ -130,7 +122,6 @@ function scene:hide(event)
 
   button_settings:removeEventListener("touch", settingsTouch)
   button_score_mode:removeEventListener("touch", scoreModeTouch)
-  button_arcade:removeEventListener("touch", arcadeTouch)
   display.remove(cmt.sprite)
 end
 
