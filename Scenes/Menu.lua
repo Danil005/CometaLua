@@ -12,7 +12,7 @@ local soundOfButton= audio.loadSound("audio/buttonsInMenu.wav")
 bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.wav")
 audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
 audio.fade( { channel, time=198, volume=0.5 } )
-audio.fadeOut( channel, time = 5000 )
+
 
 function scoreModeTouch(event)
   if(event.phase == "began") then
