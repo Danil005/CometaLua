@@ -7,4 +7,5 @@ local composer = require("composer")
 WIDTH = display.contentWidth
 HEIGHT = display.contentHeight
 
-composer.gotoScene("Scenes.Menu")
+require("Classes.Comet")
+--composer.gotoScene("Scenes.Menu")
