@@ -16,11 +16,11 @@ local comet_options =
 
 local comet_anim_options =
 {
-  width =330,
-  height = 1702,
-  numFrames = 30,
-  sheetContentWidth = 9900,
-  sheetContentHeight = 1702
+  width =500,
+  height = 2500,
+  numFrames = 10,
+  sheetContentWidth = 5000,
+  sheetContentHeight = 2500
 }
 
 local front_comet_sheet = graphics.newImageSheet( "images/default/comet_front.png", comet_options)
@@ -58,22 +58,22 @@ comet_data =
     name = "forward",
     sheet = forward_comet_sheet,
     start = 1,
-    count = 30,
-    time = 1000,
+    count = 10,
+    time = 150,
     loopCount = 0
   }
 }
 
 comet = {}
 
-function comet:new(folder_name, power)
+function comet:new(folder_name, power, x, y)
     local obj= {}
     obj.folder = folder_name -- Местоположение текущего скина
-    obj.x = 150 -- коорд. x
-    obj.y = 300 -- коорд. y
     obj.scale = 0.2
     obj.power = power
     obj.sprite = display.newSprite(forward_comet_sheet, comet_data) -- Сам спрайт кометы
+    obj.sprite.x = x
+    obj.sprite.y = y
     obj.poses_list = {} -- здесь будут позиции для плавной анимации
 
     setmetatable(obj, self)
@@ -83,7 +83,7 @@ function comet:new(folder_name, power)
 
 function comet:animate(command)
     self.sprite:setSequence(command)
-    self.sprite:scale(comet.self.scale, comet.self.scale)
+    self.sprite:scale(self.scale, self.scale)
     self.sprite:play()
   end
 
@@ -97,11 +97,11 @@ end
 -- return scene
 
 function comet:move(x)
-  self.x = self.x + x
+  self.sprite.x = self.sprite.x + x
 end
 
 function comet:new_list(f_x) -- Положение касания, чтобы дальше него не заходить
-  local l_x = self.x
+  local l_x = self.sprite.x
   if f_x - l_x < 0 then
     c_sign = -1
   else
@@ -120,22 +120,23 @@ end
 
 function comet:next_position()
   if #self.poses_list == 0 then
-    return self.x
+    return self.sprite.x
   else
-    result = self.x + self.poses_list[1]
+    result = self.sprite.x + self.poses_list[1]
     table.remove(self.poses_list, 1)
     return result
   end
 end
 
 function comet:move()
-  self.x = self:next_position()
-  print(self.x)
+  self.sprite.x = self:next_position()
+  print(self.sprite.x)
 end
 
-local test_comet = comet:new("noname", 4)
+local test_comet = comet:new("noname", 4, 150, 300)
 
 test_comet:new_list(120)
 for i = 1, 20 do
   test_comet:move()
 end
+test_comet:animate("forward")
