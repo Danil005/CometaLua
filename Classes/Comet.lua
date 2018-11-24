@@ -5,15 +5,6 @@ comet = {}
 -- local scene = composer.newScene()
 
 -- Дохуя
-local comet_options =
-{
-    width = 1119,
-    height = 1856,
-    numFrames = 5,
-    sheetContentWidth = 5596,
-    sheetContentHeight = 1856
-}
-
 local comet_anim_options =
 {
   width =500,
@@ -23,35 +14,46 @@ local comet_anim_options =
   sheetContentHeight = 2500
 }
 
-local front_comet_sheet = graphics.newImageSheet( "images/default/comet_front.png", comet_options)
-local left_comet_sheet = graphics.newImageSheet( "images/default/comet_left.png", comet_options)
-local right_comet_sheet = graphics.newImageSheet( "images/default/comet_right.png", comet_options)
-forward_comet_sheet = graphics.newImageSheet("images/default/comet_forward.png", comet_anim_options)
+local forward_comet_sheet = graphics.newImageSheet("images/default/forward.png", comet_anim_options)
+
+local left_comet_sheet_1 = graphics.newImageSheet( "images/default/left_1.png", comet_anim_options)
+local right_comet_sheet_1 = graphics.newImageSheet( "images/default/right_1.png", comet_anim_options)
+local left_comet_sheet_2 = graphics.newImageSheet( "images/default/left_2.png", comet_anim_options)
+local right_comet_sheet_2 = graphics.newImageSheet( "images/default/right_2.png", comet_anim_options)
+
 
 comet_data =
 {
   {
-    name = "front",
-    sheet = front_comet_sheet,
-    start = 1,
-    count = 5,
-    time = 800,
-    loopCount = 0
-  },
-  {
     name = "left",
-    sheet = left_comet_sheet,
+    sheet = left_comet_sheet_1,
     start = 1,
-    count = 5,
-    time = 800,
+    count = 10,
+    time = 250,
     loopCount = 0
   },
   {
     name = "right",
-    sheet = right_comet_sheet,
+    sheet = right_comet_sheet_1,
     start = 1,
-    count = 5,
-    time = 300,
+    count = 10,
+    time = 250,
+    loopCount = 0
+  },
+  {
+    name = "high_left",
+    sheet = left_comet_sheet_2,
+    start = 1,
+    count = 10,
+    time = 250,
+    loopCount = 0
+  },
+  {
+    name = "high_right",
+    sheet = right_comet_sheet_2,
+    start = 1,
+    count = 10,
+    time = 250,
     loopCount = 0
   },
   {
@@ -63,8 +65,6 @@ comet_data =
     loopCount = 0
   }
 }
-
-comet = {}
 
 function comet:new(folder_name, power, x, y)
     local obj= {}
@@ -131,3 +131,6 @@ end
 function comet:move()
     self.sprite.x = self:next_position()
 end
+
+local test_comet = comet:new("no", 4, 150, 300)
+test_comet:animate("high_left")

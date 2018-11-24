@@ -55,6 +55,11 @@ function Gravity:get_location(coords)
     end
 end
 
+function Gravity:move(x, y)
+  self.center[0] = x
+  self.center[1] = y
+end
+
 -- Дистанция от координаты до центра.
 -- Вход: координаты кометы (x, y).
 -- Выход: расстояние от кометы до центра в пикселях.
