@@ -83,6 +83,9 @@ end
 
 function scene:show(event)
     local scene_group = self.view
+    settings = loadSettings("settings.json")
+    is_mute_musics = settings.flagAudio
+
     if(event.phase == "did") then
       button_back:addEventListener("touch", backTouch)
 

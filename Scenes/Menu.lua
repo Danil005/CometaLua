@@ -8,8 +8,8 @@ local image_comet = nil
 local button_settings = nil
 local button_arcade = nil
 local button_score_mode = nil
-local soundOfButton= audio.loadSound("audio/buttonsInMenu.wav")
-bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.wav")
+local soundOfButton= audio.loadSound("audio/buttonsInMenu.mp3")
+bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.mp3")
 audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
 audio.fade( { channel, time=198, volume=0.5 } )
 

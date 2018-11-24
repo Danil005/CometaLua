@@ -9,3 +9,5 @@ HEIGHT = display.contentHeight
 
 -- require("Classes.Animations")
 composer.gotoScene("Scenes.Menu")
+
+flagAudio = false
