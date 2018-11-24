@@ -96,7 +96,7 @@ function Gravity:gravity(x,y)
     end
     strength_gravity = 1 - self:distance(x,y)/(self.y+self.zone2[1])
     if (y > self.y) then
-      move_planet = strength_gravity*self:get_strength(x,y)
+      move_planet = 0.2*self:get_strength(x,y)
     end
 
     return {math.floor(move_comet+0.5), math.floor(move_planet+0.5)}
