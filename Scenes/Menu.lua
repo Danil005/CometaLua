@@ -1,10 +1,12 @@
 local composer = require("composer")
+require("Classes.Comet")
 
 local scene = composer.newScene()
 
 --Переменные кнопок
 local background = nil
-local image_comet = nil
+local background2 = nil
+local cmt = nil
 local button_settings = nil
 local button_arcade = nil
 local button_score_mode = nil
@@ -12,7 +14,20 @@ local soundOfButton= audio.loadSound("audio/buttonsInMenu.mp3")
 bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.mp3")
 audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
 audio.fade( { channel, time=198, volume=0.5 } )
+]]
 
+local function enterFrame(event)
+    if (background.y < HEIGHT*1.5) then
+        background.y = background.y +0.5
+    else
+        background.y = display.contentCenterY
+    end
+    if (background2.y < display.contentCenterY) then
+        background2.y = background2.y + 0.5
+    else
+        background2.y = -display.contentCenterY+1
+    end
+end
 
 function scoreModeTouch(event)
   if(event.phase == "began") then
@@ -32,13 +47,27 @@ end
 
 function settingsTouch(event)
   if(event.phase == "began") then
-    audio.play( soundOfButton)
+  --  audio.play( soundOfButton)
     composer.gotoScene("Scenes.Settings")
   end
 end
 
 function scene:create(event)
     local scene_group = self.view
+    cmt = comet:new("noname", 4, display.contentCenterX+50, display.contentCenterY)
+
+    cmt:new_list(120)
+    for i = 1, 20 do
+      cmt:move()
+    end
+    cmt:animate("forward")
+
+    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
+    background.x = display.contentCenterX
+    background.y = display.contentCenterY
+    background2 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
+    background2.x = display.contentCenterX
+    background2.y = -display.contentCenterY+1
 
     --Установки кнопок на места
     background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
@@ -60,6 +89,7 @@ function scene:create(event)
     --image_comet.x = display.contentCenterX
     --image_comet.y = display.contentCenterY * 1.5
 
+
 end
 
 
@@ -69,6 +99,7 @@ function scene:show(event)
     button_settings:addEventListener("touch", settingsTouch)
     button_score_mode:addEventListener("touch", scoreModeTouch)
     button_arcade:addEventListener("touch", arcadeTouch)
+    Runtime:addEventListener("enterFrame",enterFrame)
   end
 end
 
