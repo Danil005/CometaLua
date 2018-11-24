@@ -11,6 +11,7 @@ local button_settings = nil
 local button_arcade = nil
 local button_score_mode = nil
 local start_comet = false
+local speed_background = 2
 
 local soundOfButton= audio.loadSound("audio/buttonsInMenu.wav")
 bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.wav")
@@ -18,17 +19,19 @@ audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
 audio.fade( { channel, time=198, volume=0.5 } )
 
 local function enterFrame(event)
-    if (background.y < HEIGHT*1.5) then
-        background.y = background.y +0.5
+
+    if (background.y <= display.contentCenterY*3-10) then
+        background.y = background.y + speed_background
     else
-        background.y = display.contentCenterY
+        background.y = -display.contentCenterY
     end
-    if (background2.y < display.contentCenterY) then
-        background2.y = background2.y + 0.5
+    if (background2.y <= display.contentCenterY*3-10) then
+        background2.y = background2.y + speed_background
     else
-        background2.y = -display.contentCenterY+1
+        background2.y = -display.contentCenterY
     end
-    if (start_comet and cmt.sprite.y < -10) then
+
+    if (start_comet and cmt.sprite.y < -70) then
         start_comet = false
         composer.gotoScene("Scenes.Game_arkada")
     elseif (start_comet) then
@@ -70,9 +73,6 @@ function scene:create(event)
     background2.y = -display.contentCenterY+1
 
     --Установки кнопок на места
-    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY
     button_settings = display.newImageRect( scene_group,"Sprites/knopka_nastroyki.png", 35,35)
     button_settings.x = 265
     button_settings.y = 30
