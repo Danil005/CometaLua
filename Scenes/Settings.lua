@@ -2,6 +2,7 @@
 local json = require("json")
 local composer = require("composer")
 local Menu = require("Scenes.Menu")
+local arcade = require("Scenes.Game_arkada")
 local scene = composer.newScene()
 local background = nil
 local image_comet = nil
@@ -11,8 +12,12 @@ local button_musics_on = nil
 local button_musics_off = nil
 local button_sounds_on = nil
 local button_sounds_off = nil
-local is_mute_musics = true
-local is_mute_sounds = false
+local musics = load_settings()
+local is_mute_musics = musics.flagAudio
+--local is_mute_sounds = load_settings().flagSounds
+local speed_background = 2
+local background = nil
+local background2 = nil
 
 function load_settings()
       local path = system.pathForFile( "settings.json" )
@@ -22,8 +27,7 @@ function load_settings()
           --print(saveData)
           io.close( file )
           local jsonRead = json.decode(saveData)
-          result = jsonRead.flagAudio
-          return result
+          return jsonRead
         end
       return nil
   end
@@ -51,23 +55,44 @@ local function mute_musics(event)
 end
 
 local function mute_sound(event)
-  --result = load_settings()
     if (event.phase == "began") then
         audio.play(soundOfButton)
         is_mute_sounds = not is_mute_sounds
         if(is_mute_sounds) then
             button_sounds_off.alpha = 1
             button_sounds_on.alpha = 0
+            audio.setVolume(0, { soundOfButton = soundOfButton })
         else
             button_sounds_off.alpha = 0
             button_sounds_on.alpha = 1
+            audio.setVolume(1, { soundOfButton = soundOfButton })
         end
     end
 end
 
+local function enterFrame(event)
 
+    if (background.y <= display.contentCenterY*3-10) then
+        background.y = background.y + speed_background
+    else
+        background.y = -display.contentCenterY
+    end
+    if (background2.y <= display.contentCenterY*3-10) then
+        background2.y = background2.y + speed_background
+    else
+        background2.y = -display.contentCenterY
+    end
+end
 function scene:create(event)
     local scene_group = self.view
+
+    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
+    background.x = display.contentCenterX
+    background.y = display.contentCenterY
+    background2 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
+    background2.x = display.contentCenterX
+    background2.y = -display.contentCenterY+1
+
     background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
     background.x = display.contentCenterX
     background.y = display.contentCenterY
@@ -93,6 +118,8 @@ function scene:create(event)
     button_sounds_off.x = display.contentCenterX + 40
     button_sounds_off.y = display.contentCenterY
     button_sounds_off.alpha = 0
+
+
     end
 
 function scene:show(event)
@@ -106,17 +133,20 @@ function scene:show(event)
       button_sounds_on:addEventListener("touch",mute_sound)
       button_sounds_off:addEventListener("touch",mute_sound)
 
-      title_scene = display.newText( "Настройки", 0, 0, native.systemFont, 30 )
+      title_scene = display.newImageRect( "filename", [baseDir,] width, height )( "Настройки", 0, 0, native.systemFont, 30 )
       scene_group:insert(title_scene)
       title_scene.x = display.contentCenterX - 70
       title_scene.y = display.contentCenterY - 207
       title_scene:setFillColor( 1, 1, 1 )
       title_scene.anchorX = 0
+
+      Runtime:addEventListener("enterFrame", enterFrame) -- Добавление бесконечного цикла
     end
 end
 
 
 function scene:hide(event)
+    Runtime:removeEventListener("enterFrame",enterFrame)
     button_back:removeEventListener("touch", backTouch)
     button_musics_on:removeEventListener("touch", mute_musics)
     button_musics_off:removeEventListener("touch",mute_musics)

@@ -105,3 +105,4 @@ end
 function Gravity:gravity_2(x, y)
   legs = self:get_legs(x,y)
   hype = math.sqrt(legs[1]*legs[1] + legs[2]*legs[2])
+end

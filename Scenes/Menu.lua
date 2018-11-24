@@ -5,34 +5,33 @@ require("Classes.Comet")
 local scene = composer.newScene()
 
 --Переменные кнопок
-local background = nil
-local background2 = nil
+local background3 = nil
+local background4 = nil
 local cmt = nil
 local button_settings = nil
 local button_arcade = nil
 local button_score_mode = nil
-local is_mute_musics = false
-local is_mute_sounds = false
 local soundOfButton= audio.loadSound("audio/buttonsInMenu.mp3")
 bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.mp3")
 local start_comet = false
+local speed_background = 2
 audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
 audio.fade( { channel, time=198, volume=0.5 } )
 
 local function enterFrame(event)
-    if (background.y < HEIGHT*1.5) then
-        background.y = background.y +0.5
+    if (background3.y <= display.contentCenterY*3-10) then
+        background3.y = background3.y + speed_background
     else
-        background.y = display.contentCenterY
+        background3.y = -display.contentCenterY
     end
-    if (background2.y < display.contentCenterY) then
-        background2.y = background2.y + 0.5
+    if (background4.y <= display.contentCenterY*3-10) then
+        background4.y = background4.y + speed_background
     else
-        background2.y = -display.contentCenterY+1
+        background4.y = -display.contentCenterY
     end
-    if (start_comet and cmt.sprite.y < -10) then
+    if (start_comet and cmt.sprite.y < -70) then
         start_comet = false
-        composer.gotoScene("Scenes.Game_arkada")
+        composer.gotoScene("Scenes.loadmainmenu")
     elseif (start_comet) then
         cmt.sprite.y = cmt.sprite.y - 3
     end
@@ -40,7 +39,7 @@ end
 
 function scoreModeTouch(event)
   if(event.phase == "began") then
-    audio.stop()
+    audio.stop(bgMusicInMenu)
     audio.play( soundOfButton)
     start_comet = true
   end
@@ -64,17 +63,14 @@ end
 function scene:create(event)
     local scene_group = self.view
 
-    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY
-    background2 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
-    background2.x = display.contentCenterX
-    background2.y = -display.contentCenterY+1
+    background3 = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
+    background3.x = display.contentCenterX
+    background3.y = display.contentCenterY
+    background4 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
+    background4.x = display.contentCenterX
+    background4.y = -display.contentCenterY+1
 
     --Установки кнопок на места
-    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY
     button_settings = display.newImageRect( scene_group,"Sprites/knopka_nastroyki.png", 35,35)
     button_settings.x = 265
     button_settings.y = 30
@@ -131,6 +127,7 @@ function load_settings()
   end
 
 function scene:hide(event)
+
   button_settings:removeEventListener("touch", settingsTouch)
   button_score_mode:removeEventListener("touch", scoreModeTouch)
   button_arcade:removeEventListener("touch", arcadeTouch)
