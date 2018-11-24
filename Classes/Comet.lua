@@ -64,8 +64,6 @@ comet_data =
   }
 }
 
-comet = {}
-
 function comet:new(folder_name, power, x, y)
     local obj= {}
     obj.folder = folder_name -- Местоположение текущего скина

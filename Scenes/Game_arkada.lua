@@ -136,12 +136,12 @@ local function enterFrame(event)
         cmt.sprite.x = WIDTH*0.90
     end
 
-    if (background.y < HEIGHT*1.5) then
-        background.y = background.y +speed_background
+    if (background.y <= display.contentCenterY*3-10) then
+        background.y = background.y + speed_background
     else
-        background.y = display.contentCenterY
+        background.y = -display.contentCenterY
     end
-    if (background2.y < display.contentCenterY) then
+    if (background2.y <= display.contentCenterY*3-10) then
         background2.y = background2.y + speed_background
     else
         background2.y = -display.contentCenterY
@@ -158,7 +158,7 @@ function scene:create(event)
     background.y = display.contentCenterY
     background2 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
     background2.x = display.contentCenterX
-    background2.y = -display.contentCenterY
+    background2.y = -display.contentCenterY+1
 
     M.init({x = display.contentCenterX+90, y = display.contentCenterY/15})
 end
