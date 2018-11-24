@@ -1,4 +1,5 @@
 local composer = require("composer")
+local json = require("json")
 require("Classes.Comet")
 
 local scene = composer.newScene()
@@ -10,10 +11,10 @@ local cmt = nil
 local button_settings = nil
 local button_arcade = nil
 local button_score_mode = nil
-local start_comet = false
---[[
-local soundOfButton= audio.loadSound("audio/buttonsInMenu.wav")
-bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.wav")
+local is_mute_musics = false
+local is_mute_sounds = false
+local soundOfButton= audio.loadSound("audio/buttonsInMenu.mp3")
+bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.mp3")
 audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
 audio.fade( { channel, time=198, volume=0.5 } )
 
@@ -92,6 +93,14 @@ end
 
 
 function scene:show(event)
+  result = true;
+  result = load_settings()
+  is_mute_musics = not result
+  if(is_mute_musics) then
+      audio.pause(bgMusicInMenu)
+  else
+      audio.resume(bgMusicInMenu)
+  end
   if(event.phase == "did") then
     cmt = comet:new("noname", 4, display.contentCenterX+42, display.contentCenterY)
     cmt:new_list(120)
@@ -105,6 +114,20 @@ function scene:show(event)
     Runtime:addEventListener("enterFrame",enterFrame)
   end
 end
+
+function load_settings()
+      local path = system.pathForFile( "settings.json" )
+      local file = io.open( path, "r" )
+      if file then
+          local saveData = file:read( "*a" )
+          --print(saveData)
+          io.close( file )
+          local jsonRead = json.decode(saveData)
+          result = jsonRead.flagAudio
+          return result
+        end
+      return nil
+  end
 
 function scene:hide(event)
   button_settings:removeEventListener("touch", settingsTouch)
