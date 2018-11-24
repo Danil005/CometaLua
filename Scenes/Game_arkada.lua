@@ -8,6 +8,7 @@ local speed_comet = 2
 local is_moved = false
 local planet = nil
 <<<<<<< HEAD
+<<<<<<< HEAD
 local soundOfComet = audio.loadSound("audio/soundOfComet.mp3")
 local backgroundMusic = audio.loadStream("audio/backgroundMusic.mp3")
 audio.play( backgroundMusic, {channel, loops=-1, fadein=50000 })
@@ -18,6 +19,10 @@ function playAudio(event)
     --audio.play( soundOfComet )
   end
 end
+=======
+local gravity_planet = nil
+
+>>>>>>> master
 =======
 local gravity_planet = nil
 
