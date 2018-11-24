@@ -11,7 +11,7 @@ local button_settings = nil
 local button_arcade = nil
 local button_score_mode = nil
 local start_comet = false
---[[
+
 local soundOfButton= audio.loadSound("audio/buttonsInMenu.wav")
 bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.wav")
 audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
