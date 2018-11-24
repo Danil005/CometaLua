@@ -22,7 +22,7 @@ local function moved_comet(x)
 end
 
 local function generate_planet()
-    
+
 end
 
 local function controller(event)
