@@ -17,7 +17,7 @@ planets_list[2] = graphics.newImageSheet("Sprites/planet_2.png",options)
 planets_list[3] = graphics.newImageSheet("Sprites/planet_3.png",options)
 planets_list[4] = graphics.newImageSheet("Sprites/planet_4.png",options)
 
-function Planet:new(x, y, form, zones)
+function Planet:new(x, y, form, side, zones)
     local obj= {}
     obj.sprite = display.newImageRect(planet_list[form], 2, side, side) -- Сам спрайт кометы
     obj.sprite.x = x

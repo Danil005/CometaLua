@@ -1,6 +1,7 @@
 local composer = require("composer")
 local gravity = require("Classes.Gravity")
 require("Classes.Comet")
+require("Classes.Gravity")
 local scene = composer.newScene()
 
 local options =
@@ -17,6 +18,11 @@ local image_sheet_planet2 = graphics.newImageSheet("Sprites/planet_2.png",option
 local image_sheet_planet3 = graphics.newImageSheet("Sprites/planet_3.png",options)
 local image_sheet_planet4 = graphics.newImageSheet("Sprites/planet_4.png",options)
 
+list_planets[1] = image_sheet_planet1
+list_planets[2] = image_sheet_planet2
+list_planets[3] = image_sheet_planet3
+list_planets[4] = image_sheet_planet4
+
 local move_x = nil
 local cof = 4 -- Коофицент для получения кол-во очков
 local background = nil
@@ -25,8 +31,11 @@ local cmt = nil
 local speed_comet = 2
 local is_moved = false
 local planet = nil
+local planet_circles = {}
+local planet_radius = nil
 local speed_planets = 1
 local speed_background = 0.5
+local planet_gr = nil
 --[[
 local soundOfComet = audio.loadSound("audio/soundOfComet.mp3")
 local backgroundMusic = audio.loadStream("audio/backgroundMusic.mp3")
@@ -85,20 +94,23 @@ function M.add( amount )
     M.scoreText.text = string.format( M.format, M.score )
 end
 
-
 local function generate_planet()
-
     local scene_group = scene.view
     local count_planets = 1
     local side = math.random(100,160)
-    local form = math.random(0,3)
-    if (form == 0) then planet= display.newImageRect(image_sheet_planet1,2,side,side)
-    elseif (form == 1) then planet = display.newImageRect(image_sheet_planet2,2,side,side)
-    elseif (form == 2) then planet = display.newImageRect(image_sheet_planet3,2,side,side)
-    else planet = display.newImageRect(scene_group,image_sheet_planet4,2,side,side) end
-    planet.x = display.contentCenterX
-    planet.y = 0
+    local form = math.random(1,4)
 
+    planet = display.newImageRect(list_planets[form],2,side,side)
+    planet_circles[1] = display.newImageRect(list_planets[form],3,side*1.3,side*1.3)
+    planet_circles[2] = display.newImageRect(list_planets[form],4,side*1.5,side*1.5)
+
+    planet_gr = display.newGroup()
+    planet_gr:insert(planet_circles[2])
+    planet_gr:insert(planet_circles[1])
+    planet_gr:insert(planet)
+    planet_gr.x = display.contentCenterX
+    planet_gr.y = 0
+    planet_radius = side / 2
 end
 
 local function count_numbers()
@@ -117,16 +129,27 @@ end
 
 --Бесконечный цикл
 local function enterFrame(event)
+    local movement = nil
     if (planet == nil) then
         generate_planet()
+        gravity_planet = Gravity:new(planet_gr.x,planet_gr.y,{planet_radius*1.3,6},{planet_radius*1.6,4})
     else
-        planet.y = planet.y + 1
+        movement = gravity_planet:gravity(cmt.sprite.x,cmt.sprite.y)
+        planet_gr.y = planet_gr.y + movement[2] + speed_planets
+        gravity_planet.y = gravity_planet.y + speed_planets + movement[2]
     end
-    if (planet.y > HEIGHT*1.2) then
-        display.remove(planet)
+    if (planet_gr.y > HEIGHT*1.2) then
+        gravity_planet = nil
+        display.remove(planet_gr)
         planet = nil
+        planet_gr = nil
     end
-    cmt.sprite.x = cmt:next_position()
+
+    if (movement ~= nil) then
+        cmt.sprite.x = cmt:next_position() + movement[1]
+    else
+        cmt.sprite.x = cmt:next_position()
+    end
     if (move_x ~= nil) then
         cmt:new_list(move_x)
     end
@@ -135,6 +158,8 @@ local function enterFrame(event)
     elseif (cmt.sprite.x > WIDTH*0.90) then
         cmt.sprite.x = WIDTH*0.90
     end
+
+    print(cmt.sprite.x, cmt.sprite.y)
 
     if (background.y <= display.contentCenterY*3-10) then
         background.y = background.y + speed_background
@@ -165,7 +190,7 @@ end
 
 function scene:show(event)
     if (event.phase == "did") then
-        cmt = comet:new("noname",4,display.contentCenterX,display.contentCenterY*1.5)
+        cmt = comet:new("noname",2,display.contentCenterX,display.contentCenterY*2)
         cmt.sprite:scale(0.5,0.5)
         cmt:new_list(120)
         for i = 1, 20 do

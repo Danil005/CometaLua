@@ -1,12 +1,13 @@
 Gravity = {}
 
-function Gravity:new(center,zones)
+function Gravity:new(x,y,zone1,zone2)
 
     local obj= {}
-        obj.center = center -- Центр гравитации. (x, y).
-        obj.zones = zones -- Зоны гравитации. [(radius, strength), (radius, strength)].
+        obj.x = x
+        obj.y = y-- Центр гравитации. (x, y).
+        obj.zone1 = zone1
+        obj.zone2 = zone2-- Зоны гравитации. [(radius, strength), (radius, strength)].
         obj.measure = display.contentWidth / 100 -- Единица силы гравитации. ( 1% экрана).
-
     setmetatable(obj, self)
     self.__index = self
     return obj
@@ -29,9 +30,9 @@ end
 -- Катеты треугольника.
 -- Вход: координаты кометы (x, y).
 -- Выход: катеты треугольника от кометы до центра в пикселях.
-function Gravity:get_legs(coords)
-    leg_a = abs(self.center[0] - coords[0])  -- Катет А
-    leg_b = abs(self.center[1] - coords[1])  -- Катет B
+function Gravity:get_legs(x,y)
+    leg_a = math.abs(self.x - x)  -- Катет А
+    leg_b = math.abs(self.y - y)  -- Катет B
     return {leg_a, leg_b}
 end
 
@@ -39,7 +40,7 @@ end
 -- Вход: координаты кометы (x, y).
 -- Выход: гипотенуза треугольника от кометы до центра в пикселях.
 function Gravity:get_hype(legs)
-    return sqrt(legs[0]*legs[0] + legs[1]*legs[1])
+    return math.sqrt(legs[1]*legs[1] + legs[2]*legs[2])
 end
 
 -- Положение кометы относительно планеты.
@@ -47,8 +48,8 @@ end
 -- комета справа от планеты: 1
 -- Вход: координаты кометы (x, y).
 -- Выход: -1/1
-function Gravity:get_location(coords)
-    if self.center[0] - coords[0] >= 0 then
+function Gravity:get_location(x,y)
+    if self.x- x >= 0 then
         return 1
     else
         return -1
@@ -56,26 +57,26 @@ function Gravity:get_location(coords)
 end
 
 function Gravity:move(x, y)
-  self.center[0] = x
-  self.center[1] = y
+  self.x = x
+  self.y = y
 end
 
 -- Дистанция от координаты до центра.
 -- Вход: координаты кометы (x, y).
 -- Выход: расстояние от кометы до центра в пикселях.
-function Gravity:distance(coords)
-    return int(sqrt((coords[0] - self.center[0]) *(coords[0] - self.center[0]) + (coords[1] - self.center[1]) *(coords[1] - self.center[1])))
+function Gravity:distance(x,y)
+    return math.floor(math.sqrt((x- self.x) *(x - self.x) + (y- self.y) *(y - self.y)))
 end
 
 -- Узнать силу, с которой гравитация будет действовать.
 -- Вход: координаты кометы (x, y).
 -- Выход: сила действия в универсальной мере.
-function Gravity:get_strength(coords)
-    dist = self.distance(coords)
-    if dist <= self.zones[0][0] then
-        return self.zones[0][1]
-    elseif dist <= self.zones[1][0] then
-        return self.zones[1][1]
+function Gravity:get_strength(x,y)
+    dist = self:distance(x,y)
+    if dist <= self.zone1[1] then
+        return self.zone1[2]
+    elseif dist <= self.zone2[1] then
+        return self.zone2[2]
     else
         return 0
     end
@@ -84,19 +85,23 @@ end
 -- Узнать сдвиг кометы, спровоцированный планетой
 -- Вход: координаты кометы (x, y).
 -- Выход: Сдвиг для кометы и планеты в пикселях.
-function gravity(coords)
-    legs = self.get_legs(coords)
-    hype = self.get_hype(legs)
-    cos_angle = legs[0]/hype
+function Gravity:gravity(x,y)
+    legs = self:get_legs(x,y)
+    hype = self:get_hype(legs)
+    cos_angle = legs[1]/hype
 
-    move_comet = self.get_strength(coords)*cos_angle
-    if coords[0] > self.center[0] then
+    move_comet = self:get_strength(x,y)*cos_angle
+    if (x > self.x) then
         move_comet = -move_comet
     end
-    strength_gravity = 1 - self.distance(coords)/(self.center[1]+self.zones[1][0])
-    if (coords[1] > self.center[1]) then
-      move_planet = strength_gravity*self.get_strength(coords)
+    strength_gravity = 1 - self:distance(x,y)/(self.y+self.zone2[1])
+    if (y > self.y) then
+      move_planet = 0.2*self:get_strength(x,y)
     end
-
-    return {round(move_comet), round(move_planet)}
+    print(math.floor(move_comet+0.5), math.floor(move_planet+0.5))
+    return {math.floor(move_comet+0.5), math.floor(move_planet+0.5)}
 end
+
+function Gravity:gravity_2(x, y)
+  legs = self:get_legs(x,y)
+  hype = math.sqrt(legs[1]*legs[1] + legs[2]*legs[2])
