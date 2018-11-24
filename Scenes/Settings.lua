@@ -80,7 +80,22 @@ function scene:create(event)
     button_sounds_off.x = display.contentCenterX + 40
     button_sounds_off.y = display.contentCenterY
     button_sounds_off.alpha = 0
-
+    if event.phase == true then
+      print(jsonFile("./settings.json"))
+    end
+    -- if (settings) then
+    --   is_mute_musics = not settings.flagAudio
+    --   print(is_mute_musics)
+    --   if(is_mute_musics) then
+    --       button_musics_of.alpha = 1
+    --       button_musics_on.alpha = 0
+    --       audio.pause(bgMusicInMenu)
+    --   else
+    --       button_musics_off.alpha = 0
+    --       button_musics_on.alpha = 1
+    --       audio.resume(bgMusicInMenu)
+    --   end
+    -- end
 end
 
 function scene:show(event)
@@ -100,7 +115,9 @@ function scene:show(event)
         audio.resume(bgMusicInMenu)
     end
 
+
     if(event.phase == "did") then
+
       button_back:addEventListener("touch", backTouch)
 
       button_musics_on:addEventListener("touch", mute_musics)
