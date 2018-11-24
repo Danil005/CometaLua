@@ -10,7 +10,7 @@ local button_settings = nil
 local button_arcade = nil
 local button_score_mode = nil
 local soundOfButton= audio.loadSound("audio/buttonsInMenu.wav")
-local bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.wav")
+bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.wav")
 audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
 audio.fade( { channel, time=198, volume=0.5 } )
 

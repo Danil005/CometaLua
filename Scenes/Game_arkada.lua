@@ -37,7 +37,8 @@ end
 local function generate_planet()
 
     local radius = math.random(20,60)
-    planet = display.newCircle(display.contentCenterX,0,radius)
+    local pos = math.random(-20, 20)
+    planet = display.newCircle(display.contentCenterX + pos,0,radius)
     planet:setFillColor(100/255,70/255,255/255)
     gravity_planet = Gravity:new({contentCenterX,0},{{5,4},{10,2}})
 
