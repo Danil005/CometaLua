@@ -18,6 +18,11 @@ local image_sheet_planet2 = graphics.newImageSheet("Sprites/planet_2.png",option
 local image_sheet_planet3 = graphics.newImageSheet("Sprites/planet_3.png",options)
 local image_sheet_planet4 = graphics.newImageSheet("Sprites/planet_4.png",options)
 
+list_planets[1] = image_sheet_planet1
+list_planets[2] = image_sheet_planet2
+list_planets[3] = image_sheet_planet3
+list_planets[4] = image_sheet_planet4
+
 local move_x = nil
 local cof = 4 -- Коофицент для получения кол-во очков
 local background = nil
@@ -89,25 +94,16 @@ function M.add( amount )
     M.scoreText.text = string.format( M.format, M.score )
 end
 
-
 local function generate_planet()
     local scene_group = scene.view
     local count_planets = 1
     local side = math.random(100,160)
-    local form = math.random(0,3)
-    if (form == 0) then planet = display.newImageRect(image_sheet_planet1,2,side,side)
-        planet_circles[1] = display.newImageRect(image_sheet_planet1,3,side*1.3,side*1.3)
-        planet_circles[2] = display.newImageRect(image_sheet_planet1,4,side*1.5,side*1.5)
-    elseif (form == 1) then planet = display.newImageRect(image_sheet_planet2,2,side,side)
-        planet_circles[1] = display.newImageRect(image_sheet_planet2,3,side*1.3,side*1.3)
-        planet_circles[2] = display.newImageRect(image_sheet_planet2,4,side*1.5,side*1.5)
-    elseif (form == 2) then planet = display.newImageRect(image_sheet_planet3,2,side,side)
-        planet_circles[1] = display.newImageRect(image_sheet_plane3,3,side*1.3,side*1.3)
-        planet_circles[2] = display.newImageRect(image_sheet_planet3,4,side*1.5,side*1.5)
-    else planet = display.newImageRect(scene_group,image_sheet_planet4,2,side,side)
-        planet_circles[1] = display.newImageRect(image_sheet_planet4,3,side*1.3,side*1.3)
-        planet_circles[2] = display.newImageRect(image_sheet_planet4,4,side*1.5,side*1.5)
-    end
+    local form = math.random(1,4)
+
+    planet = display.newImageRect(list_planets[form],2,side,side)
+    planet_circles[1] = display.newImageRect(list_planets[form],3,side*1.3,side*1.3)
+    planet_circles[2] = display.newImageRect(list_planets[form],4,side*1.5,side*1.5)
+
     planet_gr = display.newGroup()
     planet_gr:insert(planet_circles[2])
     planet_gr:insert(planet_circles[1])
@@ -163,6 +159,8 @@ local function enterFrame(event)
         cmt.sprite.x = WIDTH*0.90
     end
 
+    print(cmt.sprite.x, cmt.sprite.y)
+
     if (background.y <= display.contentCenterY*3-10) then
         background.y = background.y + speed_background
     else
@@ -192,7 +190,7 @@ end
 
 function scene:show(event)
     if (event.phase == "did") then
-        cmt = comet:new("noname",2,display.contentCenterX,display.contentCenterY*1.5)
+        cmt = comet:new("noname",2,display.contentCenterX,display.contentCenterY*2)
         cmt.sprite:scale(0.5,0.5)
         cmt:new_list(120)
         for i = 1, 20 do
