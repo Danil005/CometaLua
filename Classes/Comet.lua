@@ -59,7 +59,7 @@ comet_data =
     sheet = forward_comet_sheet,
     start = 1,
     count = 10,
-    time = 150,
+    time = 250,
     loopCount = 0
   }
 }
