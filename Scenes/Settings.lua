@@ -3,7 +3,6 @@ local json = require("json")
 local composer = require("composer")
 local Menu = require("Scenes.Menu")
 local scene = composer.newScene()
-
 local background = nil
 local image_comet = nil
 local soundOfButton = audio.loadSound("audio/buttonsInMenu.mp3")
@@ -12,10 +11,22 @@ local button_musics_on = nil
 local button_musics_off = nil
 local button_sounds_on = nil
 local button_sounds_off = nil
-
-local is_mute_musics = false
+local is_mute_musics = true
 local is_mute_sounds = false
 
+function load_settings()
+      local path = system.pathForFile( "settings.json" )
+      local file = io.open( path, "r" )
+      if file then
+          local saveData = file:read( "*a" )
+          --print(saveData)
+          io.close( file )
+          local jsonRead = json.decode(saveData)
+          result = jsonRead.flagAudio
+          return result
+        end
+      return nil
+  end
 
 local function backTouch(event)
     if(event.phase == "began") then
@@ -25,23 +36,24 @@ local function backTouch(event)
 end
 
 local function mute_musics(event)
-    result = load_settings()
     if (event.phase == "began") then
-        result = not result
-        if(result) then
-            button_musics_off.alpha = 1
-            button_musics_on.alpha = 0
-            audio.pause(bgMusicInMenu)
+        is_mute_musics = not is_mute_musics
+        if(is_mute_musics) then
+          button_musics_off.alpha = 1
+          button_musics_on.alpha = 0
+          audio.pause(bgMusicInMenu)
         else
-            button_musics_off.alpha = 0
-            button_musics_on.alpha = 1
-            audio.resume(bgMusicInMenu)
+          button_musics_off.alpha = 0
+          button_musics_on.alpha = 1
+          audio.resume(bgMusicInMenu)
         end
     end
 end
 
 local function mute_sound(event)
+  --result = load_settings()
     if (event.phase == "began") then
+        audio.play(soundOfButton)
         is_mute_sounds = not is_mute_sounds
         if(is_mute_sounds) then
             button_sounds_off.alpha = 1
@@ -81,42 +93,10 @@ function scene:create(event)
     button_sounds_off.x = display.contentCenterX + 40
     button_sounds_off.y = display.contentCenterY
     button_sounds_off.alpha = 0
-    if event.phase == true then
-      print(jsonFile("./settings.json"))
     end
-    -- if (settings) then
-    --   is_mute_musics = not settings.flagAudio
-    --   print(is_mute_musics)
-    --   if(is_mute_musics) then
-    --       button_musics_of.alpha = 1
-    --       button_musics_on.alpha = 0
-    --       audio.pause(bgMusicInMenu)
-    --   else
-    --       button_musics_off.alpha = 0
-    --       button_musics_on.alpha = 1
-    --       audio.resume(bgMusicInMenu)
-    --   end
-    -- end
-end
 
 function scene:show(event)
     local scene_group = self.view
-    -- result = true;
-    -- result = load_settings()
-    -- print(result)
-    -- is_mute_musics = not result
-    -- print(is_mute_musics)
-    -- if(is_mute_musics) then
-    --     button_musics_off.alpha = 1
-    --     button_musics_on.alpha = 0
-    --     audio.pause(bgMusicInMenu)
-    -- else
-    --     button_musics_off.alpha = 0
-    --     button_musics_on.alpha = 1
-    --     audio.resume(bgMusicInMenu)
-    -- end
-
-
     if(event.phase == "did") then
 
       button_back:addEventListener("touch", backTouch)
@@ -147,19 +127,6 @@ function scene:hide(event)
 end
 
 
-function load_settings()
-      local path = system.pathForFile( "settings.json" )
-      local file = io.open( path, "r" )
-      if file then
-          local saveData = file:read( "*a" )
-          --print(saveData)
-          io.close( file )
-          local jsonRead = json.decode(saveData)
-          result = jsonRead.flagAudio
-          return result
-        end
-      return nil
-  end
 
 scene:addEventListener("create",scene)
 scene:addEventListener("show",scene)
