@@ -1,4 +1,3 @@
-
 display.setStatusBar( display.HiddenStatusBar)
 math.randomseed( os.time() )
 
