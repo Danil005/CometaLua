@@ -64,8 +64,6 @@ comet_data =
   }
 }
 
-comet = {}
-
 function comet:new(folder_name, power, x, y)
     local obj= {}
     obj.folder = folder_name -- Местоположение текущего скина
@@ -131,3 +129,6 @@ end
 function comet:move()
     self.sprite.x = self:next_position()
 end
+
+local test_comet = comet:new("no", 4, 150, 300)
+test_comet:animate("forward")
