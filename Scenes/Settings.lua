@@ -7,31 +7,40 @@ local background = nil
 local image_comet = nil
 local soundOfButton = audio.loadSound("audio/buttonsInMenu.wav")
 local button_back = nil
+local button_mute_net_musics = nil
 
-function backTouch(event)
+local active = false
+
+local function backTouch(event)
   if(event.phase == "began") then
     audio.play(soundOfButton)
     composer.gotoScene("Scenes.menu")
   end
 end
 
-function mute_musics(event)
+local function mute_musics(event)
   if(event.phase == "began") then
+    button_mute_net_musics = display.newImageRect("Sprites/knopka_net_muzyka.png", 60,61)
+    button_mute_net_musics.x = display.contentCenterX - 40
+    button_mute_net_musics.y = display.contentCenterY
+  end
+end
+
+local function mute_sounds(event)
+  if(event.phase == "began") then
+
 
   end
 end
 
-function mute_sounds(event)
+local function unmute_musics(event)
   if(event.phase == "began") then
+      display.remove(button_mute_net_musics)
+    button_mute_net_musics:removeEventListener("touch", unmute_musics)
   end
 end
 
-function unmute_musics(event)
-  if(event.phase == "began") then
-  end
-end
-
-function unmute_sounds(event)
+local function unmute_sounds(event)
   if(event.phase == "began") then
   end
 end
@@ -62,6 +71,7 @@ function scene:show(event)
     button_mute_musics:addEventListener("touch", mute_musics)
     button_mute_sounds:addEventListener("touch", mute_sounds)
 
+
     title_scene = display.newText( "Настройки", 0, 0, native.systemFont, 30 )
     title_scene.x = display.contentCenterX - 70
     title_scene.y = display.contentCenterY - 207
@@ -73,6 +83,10 @@ end
 function scene:hide(event)
   button_back:removeEventListener("touch", backTouch)
   button_mute_musics:removeEventListener("touch", mute_musics)
+  if active then
+    button_mute_net_musics:addEventListener("touch", unmute_musics)
+  end
+
   button_mute_sounds:removeEventListener("touch", mute_sounds)
   display.remove(title_scene)
 end
