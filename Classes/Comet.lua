@@ -129,6 +129,3 @@ end
 function comet:move()
     self.sprite.x = self:next_position()
 end
-
-local test_comet = comet:new("no", 4, 150, 300)
-test_comet:animate("forward")
