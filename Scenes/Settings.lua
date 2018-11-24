@@ -12,25 +12,27 @@ local button_musics_on = nil
 local button_musics_off = nil
 local button_sounds_on = nil
 local button_sounds_off = nil
-local musics = load_settings()
-local is_mute_musics = musics.flagAudio
---local is_mute_sounds = load_settings().flagSounds
+local is_mute_musics = false
+local is_mute_sounds = false
 local speed_background = 2
 local background = nil
 local background2 = nil
 
-function load_settings()
-      local path = system.pathForFile( "settings.json" )
-      local file = io.open( path, "r" )
-      if file then
-          local saveData = file:read( "*a" )
-          --print(saveData)
-          io.close( file )
-          local jsonRead = json.decode(saveData)
-          return jsonRead
-        end
-      return nil
-  end
+function save_settings()
+   local saveGame = {}
+     if value then
+    saveGame["value"] = value
+     end
+
+     local jsonSaveGame = json.encode(saveGame)
+
+     local path = system.pathForFile( "saveSettings.json", system.DocumentsDirectory )
+     local file = io.open( path, "w" )
+      file:write( jsonSaveGame )
+     io.close( file )
+    file = nil
+end
+
 
 local function backTouch(event)
     if(event.phase == "began") then
@@ -133,10 +135,10 @@ function scene:show(event)
       button_sounds_on:addEventListener("touch",mute_sound)
       button_sounds_off:addEventListener("touch",mute_sound)
 
-      title_scene = display.newImageRect( "filename", [baseDir,] width, height )( "Настройки", 0, 0, native.systemFont, 30 )
+      title_scene = display.newImageRect("Sprites/nastroyki.png", 168,33)
       scene_group:insert(title_scene)
-      title_scene.x = display.contentCenterX - 70
-      title_scene.y = display.contentCenterY - 207
+      title_scene.x = display.contentCenterX - 82.5
+      title_scene.y = display.contentCenterY - 210
       title_scene:setFillColor( 1, 1, 1 )
       title_scene.anchorX = 0
 
