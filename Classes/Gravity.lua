@@ -104,5 +104,7 @@ end
 
 function Gravity:gravity_2(x, y)
   legs = self:get_legs(x,y)
-  hype = math.sqrt(legs[1]*legs[1] + legs[2]*legs[2])
+  hype = self:distance(x,y)
+  cosinus = legs[1]/hype
+  local coeff
 end
