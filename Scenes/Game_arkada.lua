@@ -1,5 +1,6 @@
 local composer = require("composer")
 local gravity = require("Classes.Gravity")
+
 local scene = composer.newScene()
 
 local options =
@@ -16,7 +17,10 @@ local background = nil
 local background2 = nil
 local comet = nil
 local speed_comet = 2
+local speed_planets = 0.5
+local cof = 4 -- Коофицент для получения кол-во очков
 local is_moved = false
+local score = 0
 local planet = nil
 local list_planets = {}
 local image_sheet_planet1 = graphics.newImageSheet( "Sprites/planet_1.png",options)
@@ -50,10 +54,70 @@ local function generate_planets()
     planet.x = display.contentCenterX
     planet.y = 0
 
+local M = {}
+
+M.score = 0  -- Set the score to 0 initially
+
+function M.init( options )
+
+    local customOptions = options or {}
+    local opt = {}
+    opt.fontSize = customOptions.fontSize or 24
+    opt.font = customOptions.font or native.systemFont
+    opt.x = customOptions.x or display.contentCenterX
+    opt.y = customOptions.y or opt.fontSize*0.5
+    opt.maxDigits = customOptions.maxDigits or 6
+    opt.leadingZeros = customOptions.leadingZeros or false
+
+    local prefix = ""
+    if ( opt.leadingZeros ) then
+        prefix = "0"
+    end
+    M.format = "%" .. prefix .. opt.maxDigits .. "d"
+
+    -- Create the score display object
+    M.scoreText = display.newText( string.format( M.format, 0 ), opt.x, opt.y, opt.font, opt.fontSize )
+
+    return M.scoreText
+end
+
+function M.set( value )
+
+    M.score = tonumber(value)
+    M.scoreText.text = string.format( M.format, M.score )
+end
+
+function M.get()
+
+    return M.score
+end
+
+function M.add( amount )
+
+    M.score = M.score + tonumber(amount)
+    M.scoreText.text = string.format( M.format, M.score )
+end
+
+local function count_numbers()
+  M.add(speed_planets*0.5)
+end
+
+
+local function moved_comet(x)
+    if (x > comet.x and is_moved) then
+        comet.x = comet.x + speed_comet
+    elseif (is_moved and x < comet.x) then
+        comet.x = comet.x - speed_comet
+    end
+    if (comet.x < 50) then
+        comet.x = 50
+    end
+    if (comet.x > WIDTH*0.9) then
+        comet.x = WIDTH*0.9
+    end
 end
 
 local function generate_planet()
-
     local radius = math.random(20,60)
     local pos = math.random(-20, 20)
     planet = display.newCircle(display.contentCenterX + pos,0,radius)
@@ -77,19 +141,16 @@ local function enterFrame(event)
     if (planet.y < HEIGHT) then
         planet.y = planet.y + 2
     else
+        planet.y = planet.y + speed_planets
+    end
+    if (planet.y > HEIGHT) then
         display.remove(planet)
         generate_planets()
     end
-    if (background.y < HEIGHT*1.5) then
-        background.y = background.y +0.5
-    else
-        background.y = display.contentCenterY
+    if M.get() / 4000 > speed_planets * 2 then
+      speed_planets = M.get() / 8000
     end
-    if (background2.y < display.contentCenterY) then
-        background2.y = background2.y + 0.5
-    else
-        background2.y = -display.contentCenterY+1
-    end
+    count_numbers()
 end
 
 function scene:create(event)
@@ -103,7 +164,8 @@ function scene:create(event)
     comet = display.newCircle( scene_group, display.contentCenterX,display.contentCenterY,20 )
     comet.x = display.contentCenterX
     comet.y = display.contentCenterY*1.5
-    generate_planets()
+
+    M.init({x = display.contentCenterX+90, y = display.contentCenterY/15})
 end
 
 function scene:show(event)
