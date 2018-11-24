@@ -36,6 +36,10 @@ local planet_radius = nil
 local speed_planets = 1
 local speed_background = 0.5
 local planet_gr = nil
+
+local list_asteroids = {}
+
+
 --[[
 local soundOfComet = audio.loadSound("audio/soundOfComet.mp3")
 local backgroundMusic = audio.loadStream("audio/backgroundMusic.mp3")
@@ -94,6 +98,26 @@ function M.add( amount )
     M.scoreText.text = string.format( M.format, M.score )
 end
 
+local options_for_asteroids =
+{
+    width = 100,
+    height = 110,
+    numFrames = 12,
+    sheetContentWidth = 1200,
+    sheetContentHeight = 110
+}
+local image_sheet_asteroids = graphics.newImageSheet("Sprites/asteroidcr.png",options_for_asteroids)
+
+local function generate_asteroids()
+    local count_asteroids = math.random(2,4)
+    for i =1, count_asteroids do
+        list_asteroids[i] = display.newImageRect(image_sheet_asteroids,2,40,40)
+        local temp_x = math.random(10,WIDTH-10)
+        list_asteroids[i].x = temp_x
+    end
+end
+
+
 local function generate_planet()
     local scene_group = scene.view
     local count_planets = 1
@@ -111,7 +135,9 @@ local function generate_planet()
     planet_gr.x = display.contentCenterX
     planet_gr.y = 0
     planet_radius = side / 2
+
 end
+
 
 local function count_numbers()
     M.add(speed_planets*0.5)
@@ -130,6 +156,10 @@ end
 --Бесконечный цикл
 local function enterFrame(event)
     local movement = nil
+    if (#list_asteroids == 0) then
+        generate_asteroids()
+    end
+
     if (planet == nil) then
         generate_planet()
         gravity_planet = Gravity:new(planet_gr.x,planet_gr.y,{planet_radius*1.3,6},{planet_radius*1.6,4})
@@ -155,21 +185,24 @@ local function enterFrame(event)
     end
     if (cmt.sprite.x < 30) then
         cmt.sprite.x = 30
-    elseif (cmt.sprite.x > WIDTH*0.90) then
-        cmt.sprite.x = WIDTH*0.90
+    elseif (cmt.sprite.x > WIDTH * 0.90) then
+        cmt.sprite.x = WIDTH * 0.90
     end
-
-    print(cmt.sprite.x, cmt.sprite.y)
 
     if (background.y <= display.contentCenterY*3-10) then
         background.y = background.y + speed_background
     else
         background.y = -display.contentCenterY
     end
+
     if (background2.y <= display.contentCenterY*3-10) then
         background2.y = background2.y + speed_background
     else
         background2.y = -display.contentCenterY
+    end
+    for i = 1,#list_asteroids do
+        local moved = math.random(1,3)
+        list_asteroids[i].y = list_asteroids[i].y + moved
     end
 
     count_numbers()
@@ -190,7 +223,7 @@ end
 
 function scene:show(event)
     if (event.phase == "did") then
-        cmt = comet:new("noname",2,display.contentCenterX,display.contentCenterY*2)
+        cmt = comet:new("noname",2,display.contentCenterX,display.contentCenterY*1.5)
         cmt.sprite:scale(0.5,0.5)
         cmt:new_list(120)
         for i = 1, 20 do
