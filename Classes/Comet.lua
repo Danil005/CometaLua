@@ -69,7 +69,7 @@ comet = {}
 function comet:new(folder_name, power, x, y)
     local obj= {}
     obj.folder = folder_name -- Местоположение текущего скина
-    obj.scale = 0.2
+    obj.scale = 0.1
     obj.power = power
     obj.sprite = display.newSprite(forward_comet_sheet, comet_data) -- Сам спрайт кометы
     obj.sprite.x = x
@@ -132,11 +132,3 @@ function comet:move()
   self.sprite.x = self:next_position()
   print(self.sprite.x)
 end
-
-local test_comet = comet:new("noname", 4, 150, 300)
-
-test_comet:new_list(120)
-for i = 1, 20 do
-  test_comet:move()
-end
-test_comet:animate("forward")
