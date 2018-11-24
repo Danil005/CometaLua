@@ -119,16 +119,15 @@ function comet:new_list(f_x) -- Положение касания, чтобы д
 end
 
 function comet:next_position()
-  if #self.poses_list == 0 then
-    return self.sprite.x
-  else
-    result = self.sprite.x + self.poses_list[1]
-    table.remove(self.poses_list, 1)
+    if #self.poses_list == 0 then
+      result = self.sprite.x
+    else
+      result = self.sprite.x + self.poses_list[1]
+      table.remove(self.poses_list, 1)
+    end
     return result
-  end
 end
 
 function comet:move()
-  self.sprite.x = self:next_position()
-  print(self.sprite.x)
+    self.sprite.x = self:next_position()
 end

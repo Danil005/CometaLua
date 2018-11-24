@@ -10,6 +10,7 @@ local cmt = nil
 local button_settings = nil
 local button_arcade = nil
 local button_score_mode = nil
+local start_comet = false
 --[[
 local soundOfButton= audio.loadSound("audio/buttonsInMenu.wav")
 bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.wav")
@@ -28,20 +29,26 @@ local function enterFrame(event)
     else
         background2.y = -display.contentCenterY+1
     end
+    if (start_comet and cmt.sprite.y < -10) then
+        start_comet = false
+        composer.gotoScene("Scenes.Game_arkada")
+    elseif (start_comet) then
+        cmt.sprite.y = cmt.sprite.y - 3
+    end
 end
 
 function scoreModeTouch(event)
   if(event.phase == "began") then
     audio.stop()
     audio.play( soundOfButton)
-    composer.gotoScene("Scenes.Game_arkada")
+    start_comet = true
   end
 end
 
 function arcadeTouch(event)
   if(event.phase == "began") then
-    audio.stop(bgMusicInMenu)
-    audio.play(soundOfButton)
+  --  audio.stop(bgMusicInMenu)
+  --  audio.play(soundOfButton)
     print("touch")
   end
 end
@@ -55,13 +62,6 @@ end
 
 function scene:create(event)
     local scene_group = self.view
-    cmt = comet:new("noname", 4, display.contentCenterX+50, display.contentCenterY)
-
-    cmt:new_list(120)
-    for i = 1, 20 do
-      cmt:move()
-    end
-    cmt:animate("forward")
 
     background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
     background.x = display.contentCenterX
@@ -74,9 +74,6 @@ function scene:create(event)
     background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
     background.x = display.contentCenterX
     background.y = display.contentCenterY
-    button_back = display.newImageRect( scene_group, "Sprites/knopka_nazad.png", 24,35)
-    button_back.x = 50
-    button_back.y = 30
     button_settings = display.newImageRect( scene_group,"Sprites/knopka_nastroyki.png", 35,35)
     button_settings.x = 265
     button_settings.y = 30
@@ -97,6 +94,12 @@ end
 
 function scene:show(event)
   if(event.phase == "did") then
+    cmt = comet:new("noname", 4, display.contentCenterX+42, display.contentCenterY)
+    cmt:new_list(120)
+    for i = 1, 20 do
+      cmt:move()
+    end
+    cmt:animate("forward")
     button_settings:addEventListener("touch", settingsTouch)
     button_score_mode:addEventListener("touch", scoreModeTouch)
     button_arcade:addEventListener("touch", arcadeTouch)
@@ -108,6 +111,7 @@ function scene:hide(event)
   button_settings:removeEventListener("touch", settingsTouch)
   button_score_mode:removeEventListener("touch", scoreModeTouch)
   button_arcade:removeEventListener("touch", arcadeTouch)
+  display.remove(cmt.sprite)
 end
 
 scene:addEventListener("create",scene)
