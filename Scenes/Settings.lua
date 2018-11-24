@@ -2,39 +2,52 @@
 
 local composer = require("composer")
 local Menu = require("Scenes.Menu")
-local json = require("json")
 local scene = composer.newScene()
-
 
 local background = nil
 local image_comet = nil
-local soundOfButton = audio.loadSound("audio/buttonsInMenu.mp3")
+local soundOfButton = audio.loadSound("audio/buttonsInMenu.wav")
 local button_back = nil
 local button_musics_on = nil
 local button_musics_off = nil
 local button_sounds_on = nil
 local button_sounds_off = nil
 
-
-function loadSettings(filename)
-	-- получаем путь к файлу
-	local path = system.pathForFile(filename, system.ResourceDirectory);
-	local contents = "";
-	local myTable = {};
-	local file = io.open(path, "r"); -- открываем файл
-	if (file) then -- если такой файл существует
-		 local contents = file:read( "*a" ); -- читаем из него данные
-		 myTable = json.decode(contents); -- расшифровываем их
-		 io.close(file); -- закрываем файл
-		 return myTable; -- возвращаем параметры из файла
-	end
-	return nil
-end
+local is_mute_musics = false
+local is_mute_sounds = false
 
 local function backTouch(event)
     if(event.phase == "began") then
       audio.play(soundOfButton)
       composer.gotoScene("Scenes.Menu")
+    end
+end
+
+local function mute_musics(event)
+    if (event.phase == "began") then
+        is_mute_musics = not is_mute_musics
+        if(is_mute_musics) then
+            button_musics_off.alpha = 1
+            button_musics_on.alpha = 0
+            audio.pause(bgMusicInMenu)
+        else
+            button_musics_off.alpha = 0
+            button_musics_on.alpha = 1
+            audio.resume(bgMusicInMenu)
+        end
+    end
+end
+
+local function mute_sound(event)
+    if (event.phase == "began") then
+        is_mute_sounds = not is_mute_sounds
+        if(is_mute_sounds) then
+            button_sounds_off.alpha = 1
+            button_sounds_on.alpha = 0
+        else
+            button_sounds_off.alpha = 0
+            button_sounds_on.alpha = 1
+        end
     end
 end
 
@@ -68,14 +81,8 @@ function scene:create(event)
 
 end
 
-
 function scene:show(event)
     local scene_group = self.view
-    settings = loadSettings("settings.json")
-    if settings then
-      is_mute_musics = settings.flagAudio
-      print(is_mute_musics)
-    end
     if(event.phase == "did") then
       button_back:addEventListener("touch", backTouch)
 
@@ -94,41 +101,7 @@ function scene:show(event)
     end
 end
 
-function mute_musics(event)
-    if (event.phase == "began") then
-        is_mute_musics = not is_mute_musics
-        if(is_mute_musics) then
-            button_musics_off.alpha = 1
-            button_musics_on.alpha = 0
-            audio.pause(bgMusicInMenu)
-            --flagAudio = false
-
-        else
-            button_musics_off.alpha = 0
-            button_musics_on.alpha = 1
-            audio.resume(bgMusicInMenu)
-            --flagAudio = false
-
-        end
-    end
-end
-
-function mute_sound(event)
-    if (event.phase == "began") then
-        is_mute_sounds = not is_mute_sounds
-        if(is_mute_sounds) then
-            button_sounds_off.alpha = 1
-            button_sounds_on.alpha = 0
-        else
-            button_sounds_off.alpha = 0
-            button_sounds_on.alpha = 1
-        end
-    end
-end
-
-
 function scene:hide(event)
-    print(is_mute_musics)
     button_back:removeEventListener("touch", backTouch)
     button_musics_on:removeEventListener("touch", mute_musics)
     button_musics_off:removeEventListener("touch",mute_musics)
@@ -138,12 +111,8 @@ function scene:hide(event)
     display.remove(title_scene)
 end
 
-
-
-
 scene:addEventListener("create",scene)
 scene:addEventListener("show",scene)
 scene:addEventListener("hide",scene)
-
 
 return scene

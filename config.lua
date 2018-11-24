@@ -7,6 +7,6 @@ application =
 		height = 480,
 		scale = "zoomEven",
 		fps = 60,
-	},
 
+	},
 }
