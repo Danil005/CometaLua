@@ -102,9 +102,27 @@ function Gravity:gravity(x,y)
     return {math.floor(move_comet+0.5), math.floor(move_planet+0.5)}
 end
 
+local function sign(a)
+  if a < 0 then
+    return -1
+  else
+    return 1
+  end
+end
+
 function Gravity:gravity_2(x, y)
   legs = self:get_legs(x,y)
-  hype = self:distance(x,y)
-  cosinus = legs[1]/hype
-  local coeff
+  local x_sign = sign(self.x - x)
+  local y_sign
+  if y - self.y > 0 then
+    y_sign = 1
+  else
+    y_sign = 0
+  end
+  local c_percent = legs[1] + legs[2]
+  local strength = self:get_strength(x,y)
+  local move_x = x_sign * strength * legs[1] / c_percent
+  local move_y = y_sign * strength * legs[2] / c_percent
+  print(math.floor(move_x+0.5), math.floor(move_y+0.5) * 0.5)
+  return {math.floor(move_x+0.5), math.floor(move_y+0.5) * 0.5}
 end

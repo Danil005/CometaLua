@@ -14,64 +14,61 @@ local comet_anim_options =
   sheetContentHeight = 2500
 }
 
-local forward_comet_sheet = graphics.newImageSheet("images/default/forward.png", comet_anim_options)
-
-local left_comet_sheet_1 = graphics.newImageSheet( "images/default/left_1.png", comet_anim_options)
-local right_comet_sheet_1 = graphics.newImageSheet( "images/default/right_1.png", comet_anim_options)
-local left_comet_sheet_2 = graphics.newImageSheet( "images/default/left_2.png", comet_anim_options)
-local right_comet_sheet_2 = graphics.newImageSheet( "images/default/right_2.png", comet_anim_options)
-
-
-comet_data =
-{
-  {
-    name = "left",
-    sheet = left_comet_sheet_1,
-    start = 1,
-    count = 10,
-    time = 250,
-    loopCount = 0
-  },
-  {
-    name = "right",
-    sheet = right_comet_sheet_1,
-    start = 1,
-    count = 10,
-    time = 250,
-    loopCount = 0
-  },
-  {
-    name = "high_left",
-    sheet = left_comet_sheet_2,
-    start = 1,
-    count = 10,
-    time = 250,
-    loopCount = 0
-  },
-  {
-    name = "high_right",
-    sheet = right_comet_sheet_2,
-    start = 1,
-    count = 10,
-    time = 250,
-    loopCount = 0
-  },
-  {
-    name = "forward",
-    sheet = forward_comet_sheet,
-    start = 1,
-    count = 10,
-    time = 250,
-    loopCount = 0
-  }
-}
-
 function comet:new(folder_name, power, x, y)
     local obj= {}
     obj.folder = folder_name -- Местоположение текущего скина
     obj.scale = 0.1
     obj.power = power
-    obj.sprite = display.newSprite(forward_comet_sheet, comet_data) -- Сам спрайт кометы
+
+    local forward_comet_sheet = graphics.newImageSheet("images/" .. folder_name .. "/forward.png", comet_anim_options)
+    local left_comet_sheet_1 = graphics.newImageSheet( "images/" .. folder_name .. "/left_1.png", comet_anim_options)
+    local right_comet_sheet_1 = graphics.newImageSheet( "images/" .. folder_name .. "/right_1.png", comet_anim_options)
+    local left_comet_sheet_2 = graphics.newImageSheet( "images/" .. folder_name .. "/left_2.png", comet_anim_options)
+    local right_comet_sheet_2 = graphics.newImageSheet( "images/" .. folder_name .. "/right_2.png", comet_anim_options)
+    local comet_data =
+    {
+      {
+        name = "left",
+        sheet = left_comet_sheet_1,
+        start = 1,
+        count = 10,
+        time = 250,
+        loopCount = 0
+      },
+      {
+        name = "right",
+        sheet = right_comet_sheet_1,
+        start = 1,
+        count = 10,
+        time = 250,
+        loopCount = 0
+      },
+      {
+        name = "high_left",
+        sheet = left_comet_sheet_2,
+        start = 1,
+        count = 10,
+        time = 250,
+        loopCount = 0
+      },
+      {
+        name = "high_right",
+        sheet = right_comet_sheet_2,
+        start = 1,
+        count = 10,
+        time = 250,
+        loopCount = 0
+      },
+      {
+        name = "forward",
+        sheet = forward_comet_sheet,
+        start = 1,
+        count = 10,
+        time = 250,
+        loopCount = 0
+      }
+    }
+    obj.sprite = display.newSprite(forward, comet_data) -- Сам спрайт кометы
     obj.sprite.x = x
     obj.sprite.y = y
     obj.poses_list = {} -- здесь будут позиции для плавной анимации

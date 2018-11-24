@@ -1,39 +1,37 @@
 local composer = require("composer")
+local json = require("json")
 require("Classes.Comet")
 
 local scene = composer.newScene()
 
 --Переменные кнопок
-local background = nil
-local background2 = nil
+local background3 = nil
+local background4 = nil
 local cmt = nil
 local button_settings = nil
 local button_arcade = nil
 local button_score_mode = nil
+local soundOfButton= audio.loadSound("audio/buttonsInMenu.mp3")
+bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.mp3")
 local start_comet = false
 local speed_background = 2
-
-local soundOfButton= audio.loadSound("audio/buttonsInMenu.wav")
-bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.wav")
 audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
 audio.fade( { channel, time=198, volume=0.5 } )
 
 local function enterFrame(event)
-
-    if (background.y <= display.contentCenterY*3-10) then
-        background.y = background.y + speed_background
+    if (background3.y <= display.contentCenterY*3-10) then
+        background3.y = background3.y + speed_background
     else
-        background.y = -display.contentCenterY
+        background3.y = -display.contentCenterY
     end
-    if (background2.y <= display.contentCenterY*3-10) then
-        background2.y = background2.y + speed_background
+    if (background4.y <= display.contentCenterY*3-10) then
+        background4.y = background4.y + speed_background
     else
-        background2.y = -display.contentCenterY
+        background4.y = -display.contentCenterY
     end
-
     if (start_comet and cmt.sprite.y < -70) then
         start_comet = false
-        composer.gotoScene("Scenes.Game_arkada")
+        composer.gotoScene("Scenes.loadmainmenu")
     elseif (start_comet) then
         cmt.sprite.y = cmt.sprite.y - 3
     end
@@ -41,7 +39,7 @@ end
 
 function scoreModeTouch(event)
   if(event.phase == "began") then
-    audio.stop()
+    audio.stop(bgMusicInMenu)
     audio.play( soundOfButton)
     start_comet = true
   end
@@ -49,15 +47,15 @@ end
 
 function arcadeTouch(event)
   if(event.phase == "began") then
-  --  audio.stop(bgMusicInMenu)
-  --  audio.play(soundOfButton)
+    audio.stop(bgMusicInMenu)
+    audio.play(soundOfButton)
     print("touch")
   end
 end
 
 function settingsTouch(event)
   if(event.phase == "began") then
-  --  audio.play( soundOfButton)
+    audio.play( soundOfButton)
     composer.gotoScene("Scenes.Settings")
   end
 end
@@ -65,12 +63,12 @@ end
 function scene:create(event)
     local scene_group = self.view
 
-    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY
-    background2 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
-    background2.x = display.contentCenterX
-    background2.y = -display.contentCenterY+1
+    background3 = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
+    background3.x = display.contentCenterX
+    background3.y = display.contentCenterY
+    background4 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
+    background4.x = display.contentCenterX
+    background4.y = -display.contentCenterY+1
 
     --Установки кнопок на места
     button_settings = display.newImageRect( scene_group,"Sprites/knopka_nastroyki.png", 35,35)
@@ -92,6 +90,14 @@ end
 
 
 function scene:show(event)
+  result = true;
+  result = load_settings()
+  is_mute_musics = not result
+  if(is_mute_musics) then
+      audio.pause(bgMusicInMenu)
+  else
+      audio.resume(bgMusicInMenu)
+  end
   if(event.phase == "did") then
     cmt = comet:new("noname", 4, display.contentCenterX+42, display.contentCenterY)
     cmt:new_list(120)
@@ -106,7 +112,22 @@ function scene:show(event)
   end
 end
 
+function load_settings()
+      local path = system.pathForFile( "settings.json" )
+      local file = io.open( path, "r" )
+      if file then
+          local saveData = file:read( "*a" )
+          --print(saveData)
+          io.close( file )
+          local jsonRead = json.decode(saveData)
+          result = jsonRead.flagAudio
+          return result
+        end
+      return nil
+  end
+
 function scene:hide(event)
+
   button_settings:removeEventListener("touch", settingsTouch)
   button_score_mode:removeEventListener("touch", scoreModeTouch)
   button_arcade:removeEventListener("touch", arcadeTouch)
