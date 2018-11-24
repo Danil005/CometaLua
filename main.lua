@@ -4,4 +4,4 @@ local composer = require("composer")
 WIDTH = display.contentWidth
 HEIGHT = display.contentHeight
 
-composer.gotoScene("Scenes.Game_arkada")
+composer.gotoScene("Scenes.Menu")
