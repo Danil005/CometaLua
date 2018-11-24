@@ -1,6 +1,11 @@
--- local composer = require("composer")
-
--- local scene = composer.newScene()
+local loading_options =
+{
+  width = 1119,
+  height = 1856,
+  numFrames = 5,
+  sheetContentWidth = 5596,
+  sheetContentHeight = 1856
+}
 
 local comet_options =
 {
