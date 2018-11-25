@@ -1,5 +1,6 @@
 Loading = {}
 Asteroid = {}
+Button = {}
 
 function Asteroid:new(x, y)
     local obj= {}
@@ -73,4 +74,21 @@ end
 
 function Loading:next_frame()
   self.image.rotation = self.image.rotation + 3
+end
+
+
+
+function Button:new(button_name, size_x, size_y, x, y)
+  obj = {}
+  obj.image = display.newImageRect("Sprites/" .. button_name, size_x, size_y)
+  obj.image.x = x
+  obj.image.y = y
+
+  setmetatable(obj, self)
+  self.__index = self
+  return obj
+end
+
+function Loading:next_frame()
+  self.image.alpha = self.image.alpha * 0.7
 end

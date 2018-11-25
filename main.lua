@@ -3,7 +3,7 @@ math.randomseed( os.time() )
 
 WIDTH = display.contentWidth
 HEIGHT = display.contentHeight
-
+SCORE = 0
 
 local composer = require( "composer" )
 composer.gotoScene( "Scenes.Menu")
