@@ -7,21 +7,13 @@ local scene = composer.newScene()
 
 
 --Переменные кнопок
-local background3 = nil
-local background4 = nil
-local cmt = nil
-local button_settings = nil
-local button_score_mode = nil
-local soundOfButton= audio.loadSound("audio/buttonsInMenu.mp3")
-bgMusicInMenu = audio.loadSound( "audio/bgMusicInMenu.mp3")
-local start_comet = false
-local speed_background = 2
-audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
-audio.fade( { channel, time=198, volume=0.5 } )
+function scene:create(event)
+    local scene_group = self.view
 
 
 
 local function enterFrame(event)
+    local speed_background = 2
     if (background3.y <= display.contentCenterY*3-10) then
         background3.y = background3.y + speed_background
     else
@@ -32,9 +24,10 @@ local function enterFrame(event)
     else
         background4.y = -display.contentCenterY
     end
+
     if (start_comet and cmt.sprite.y < -70) then
         start_comet = false
-        composer.gotoScene("Scenes.loadmainmenu")
+        composer.gotoScene("Scenes.Game_arkada", "fade")
     elseif (start_comet) then
         cmt.sprite.y = cmt.sprite.y - 3
     end
@@ -42,24 +35,17 @@ end
 
 function scoreModeTouch(event)
   if(event.phase == "began") then
-    audio.stop(bgMusicInMenu)
+    audio.pause(bgMusicInMenu)
     audio.play( soundOfButton)
     start_comet = true
   end
 end
 
-function arcadeTouch(event)
-  if(event.phase == "began") then
-    audio.stop(bgMusicInMenu)
-    audio.play(soundOfButton)
-    print("touch")
-  end
-end
 
 function settingsTouch(event)
   if(event.phase == "began") then
     audio.play( soundOfButton)
-    composer.gotoScene("Scenes.Settings")
+    composer.gotoScene("Scenes.Settings", "crossFade")
   end
 end
 
@@ -97,7 +83,8 @@ function scene:show(event)
     cmt:animate("forward")
     cmt.sprite:scale(cmt.scale, cmt.scale)
     button_settings:addEventListener("touch", settingsTouch)
-    button_score_mode:addEventListener("touch", scoreModeTouch)
+    background3:addEventListener("touch", scoreModeTouch)
+    background4:addEventListener("touch", scoreModeTouch)
     Runtime:addEventListener("enterFrame",enterFrame)
   end
 end
@@ -105,9 +92,27 @@ end
 function scene:hide(event)
 
   button_settings:removeEventListener("touch", settingsTouch)
-  button_score_mode:removeEventListener("touch", scoreModeTouch)
+  background3:removeEventListener("touch", scoreModeTouch)
+  background4:addEventListener("touch", scoreModeTouch)
   display.remove(cmt.sprite)
 end
+
+function scene:createScene( event )
+
+end
+
+function scene:enterScene( event )
+
+end
+
+function scene:exitScene( event )
+
+end
+
+function scene:destroyScene( event )
+
+end
+
 
 scene:addEventListener("create",scene)
 scene:addEventListener("show",scene)
