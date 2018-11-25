@@ -1,16 +1,25 @@
 local composer = require("composer")
 local json = require("json")
 require("Classes.Comet")
-require("Classes.Save")
-
 local scene = composer.newScene()
-
 
 --Переменные кнопок
 function scene:create(event)
     local scene_group = self.view
 
+    background3 = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
+    background3.x = display.contentCenterX
+    background3.y = display.contentCenterY
+    background4 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
+    background4.x = display.contentCenterX
+    background4.y = -display.contentCenterY+1
 
+    --Установки кнопок на места
+    button_settings = display.newImageRect( scene_group,"Sprites/knopka_nastroyki.png", 35,35)
+    button_settings.x = 265
+    button_settings.y = 30
+    -- button_score_mode = display.newImageRect( scene_group,"Sprites/rezhim_vyzhivanie.png", 205,45)
+end
 
 local function enterFrame(event)
     local speed_background = 2
@@ -33,6 +42,7 @@ local function enterFrame(event)
     end
 end
 
+
 function scoreModeTouch(event)
   if(event.phase == "began") then
     audio.pause(bgMusicInMenu)
@@ -49,37 +59,19 @@ function settingsTouch(event)
   end
 end
 
-
-function scene:create(event)
-    local scene_group = self.view
-
-    background3 = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
-    background3.x = display.contentCenterX
-    background3.y = display.contentCenterY
-    background4 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
-    background4.x = display.contentCenterX
-    background4.y = -display.contentCenterY+1
-
-    --Установки кнопок на места
-    button_settings = display.newImageRect( scene_group,"Sprites/knopka_nastroyki.png", 35,35)
-    button_settings.x = 265
-    button_settings.y = 30
-    button_score_mode = display.newImageRect( scene_group,"Sprites/rezhim_vyzhivanie.png", 205,45)
-    button_score_mode.x = display.contentCenterX
-    button_score_mode.y = display.contentCenterY*1.7
-
-
-    print(Save:getFile("database/test.json").admin)
-end
-
 function scene:show(event)
+  is_mute_musics = not result
+  if(is_mute_musics) then
+      audio.pause(bgMusicInMenu)
+  else
+      audio.resume(bgMusicInMenu)
+  end
   if(event.phase == "did") then
     cmt = comet:new(current_comet_skin, 4, display.contentCenterX+42, display.contentCenterY)
     cmt:new_list(120)
     for i = 1, 20 do
       cmt:move()
     end
-
     cmt:animate("forward")
     cmt.sprite:scale(cmt.scale, cmt.scale)
     button_settings:addEventListener("touch", settingsTouch)
