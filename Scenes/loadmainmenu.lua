@@ -21,7 +21,7 @@ function scene:show( event )
 
     print( "loadgame: show event" )
 
-    loadingImage = display.newImageRect( "Sprites/loading_Montazhnaya_oblast_1.png", 480, 320)
+    loadingImage = display.newImageRect( "Sprites/loading.png", 480, 480)
     loadingImage.x = 240; loadingImage.y = 160
     sceneGroup:insert( loadingImage )
 

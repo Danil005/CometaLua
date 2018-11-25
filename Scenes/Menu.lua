@@ -1,6 +1,7 @@
 local composer = require("composer")
 local json = require("json")
 require("Classes.Comet")
+require("Classes.Save")
 
 local scene = composer.newScene()
 
@@ -17,6 +18,8 @@ local start_comet = false
 local speed_background = 2
 audio.play(bgMusicInMenu, {channel, loops=1, fadein=15000})
 audio.fade( { channel, time=198, volume=0.5 } )
+
+
 
 local function enterFrame(event)
     if (background3.y <= display.contentCenterY*3-10) then
@@ -60,6 +63,7 @@ function settingsTouch(event)
   end
 end
 
+
 function scene:create(event)
     local scene_group = self.view
 
@@ -78,26 +82,18 @@ function scene:create(event)
     button_score_mode.x = display.contentCenterX
     button_score_mode.y = display.contentCenterY*1.7
 
+
+    print(Save:getFile("database/test.json").admin)
 end
 
 function scene:show(event)
-  --[[
-  result = true;
-  result = load_settings()
-  is_mute_musics = not result
-  ]]
-  Saving:fromFile()
-  if(Saving.is_mute_musics) then
-      audio.pause(bgMusicInMenu)
-  else
-      audio.resume(bgMusicInMenu)
-  end
   if(event.phase == "did") then
     cmt = comet:new("default", 4, display.contentCenterX+42, display.contentCenterY)
     cmt:new_list(120)
     for i = 1, 20 do
       cmt:move()
     end
+
     cmt:animate("forward")
     cmt.sprite:scale(cmt.scale, cmt.scale)
     button_settings:addEventListener("touch", settingsTouch)
@@ -105,20 +101,6 @@ function scene:show(event)
     Runtime:addEventListener("enterFrame",enterFrame)
   end
 end
-
--- function load_settings()
---       local path = system.pathForFile( "settings.json" )
---       local file = io.open( path, "r" )
---       if file then
---           local saveData = file:read( "*a" )
---           --print(saveData)
---           io.close( file )
---           local jsonRead = json.decode(saveData)
---           result = jsonRead.flagAudio
---           return result
---         end
---       return nil
---   end
 
 function scene:hide(event)
 
