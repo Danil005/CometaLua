@@ -287,7 +287,7 @@ end
 function scene:show(event)
     local scene_group = self.view
     if (event.phase == "did") then
-        cmt = comet:new("default",2,display.contentCenterX,display.contentCenterY*1.5)
+        cmt = comet:new(current_comet_skin,2,display.contentCenterX,display.contentCenterY*1.5)
         cmt.sprite:scale(0.5,0.5)
 
         cmt:new_list(120)
