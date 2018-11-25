@@ -21,7 +21,7 @@ local background2 = nil
 function save_settings()
    local saveGame = {}
      if value then
-    saveGame["value"] = value
+        saveGame["value"] = value
      end
 
      local jsonSaveGame = json.encode(saveGame)
@@ -148,6 +148,9 @@ end
 
 
 function scene:hide(event)
+    Saving.is_mute_musics = is_mute_musics
+    Saving.is_mute_sounds = is_mute_sounds
+    Saving:toFile()
     Runtime:removeEventListener("enterFrame",enterFrame)
     button_back:removeEventListener("touch", backTouch)
     button_musics_on:removeEventListener("touch", mute_musics)

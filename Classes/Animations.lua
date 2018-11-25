@@ -1,13 +1,64 @@
 Loading = {}
+Asteroid = {}
 
-local loading_options =
-{
-  width = 1119,
-  height = 1856,
-  numFrames = 5,
-  sheetContentWidth = 5596,
-  sheetContentHeight = 1856
-}
+function Asteroid:new(x, y)
+    local obj= {}
+    -- Дохуя
+    local asteroid_options =
+    {
+      width = 100,
+      height = 110,
+      numFrames = 12,
+      sheetContentWidth = 1200,
+      sheetContentHeight = 110
+    }
+    local asteroid_distortion = graphics.newImageSheet("Sprites/de_asteroid.png", asteroid_options)
+    local asteroid_data =
+    {
+      {
+        name = "destroy",
+        sheet = asteroid_distortion,
+        start = 1,
+        count = 12,
+        time = 450,
+        loopCount = 0
+      }
+    }
+    obj.sprite = display.newSprite(asteroid_distortion, asteroid_data) -- Сам спрайт кометы
+    obj.sprite.x = x
+    obj.sprite.y = y
+
+    setmetatable(obj, self)
+    self.__index = self
+    return obj
+  end
+
+function Asteroid:animate(command)
+    self.sprite:setSequence(command)
+    self.sprite:play()
+  end
+
+function Asteroid:get_pos()
+  for i = 1,#self.poses_list do
+    print(self.poses_list[i])
+  end
+end
+
+--local comet = display.newSprite(forward_comet_sheet, comet_data);
+-- return scene
+
+function Asteroid:move(x, y)
+  self.sprite.x = self.sprite.x + x
+  self.sprite.y = self.sprite.y + y
+end
+
+function Asteroid:set_position(x, y)
+  self.sprite.x = x
+  self.sprite.y = y
+end
+
+
+
 
 function Loading:new(x, y, size)
   obj = {}

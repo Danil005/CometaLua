@@ -5,6 +5,7 @@ require("Classes.Save")
 
 local scene = composer.newScene()
 
+
 --Переменные кнопок
 local background3 = nil
 local background4 = nil
@@ -85,11 +86,9 @@ function scene:create(event)
     print(Save:getFile("database/test.json").admin)
 end
 
-
-
 function scene:show(event)
   if(event.phase == "did") then
-    cmt = comet:new("default", 4, display.contentCenterX+42, display.contentCenterY)
+    cmt = comet:new(current_comet_skin, 4, display.contentCenterX+42, display.contentCenterY)
     cmt:new_list(120)
     for i = 1, 20 do
       cmt:move()

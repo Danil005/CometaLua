@@ -1,5 +1,5 @@
 comet = {}
-
+current_comet_skin = "redsplash"
 function comet:new(folder_name, power, x, y)
     local obj= {}
     obj.folder = folder_name -- Местоположение текущего скина
