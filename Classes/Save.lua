@@ -27,13 +27,13 @@ end
 
 
 
-function Save:toFile()
+function Save:toFile(path)
     local save_data = {
         ["is_mute_musics"] = self.is_mute_musics,
         ["is_mute_sounds"] = self.is_mute_sounds,
         ["scores"] = self.scores
     }
-    local file, errorString = io.open(self.PATH,"w")
+    local file, errorString = io.open(system.pathForFile( path, system.ResourceDirectory), "w")
     if not file then
         print("Error: " .. errorString)
     else

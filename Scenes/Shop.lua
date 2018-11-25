@@ -62,31 +62,42 @@ function scene:create(event)
     background2.x = display.contentCenterX
     background2.y = -display.contentCenterY+1
 
-    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY
-
     button_back = display.newImageRect( scene_group, "Sprites/knopka_nazad.png", 25,35)
     button_back.x = display.contentWidth - 270
     button_back.y = display.contentHeight - 450
 
-    element_shop_cometa_antired =  display.newImageRect( scene_group, "Sprites/shop/skin_anti_red_icon.png", 50, 50)
+    element_shop_cometa_antired =  display.newImageRect( scene_group, "Sprites/shop/skin_default_icon.png", 50, 50)
     element_shop_cometa_antired.x = display.contentCenterX - 90
     element_shop_cometa_antired.y = display.contentCenterY - 120
 
-    local element_shop_cometa_antired_text = display.newText( "Анти-красный", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
+    local element_shop_cometa_default_text = display.newText(scene_group, "Default", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
+    element_shop_cometa_default_text.x = display.contentCenterX +48
+    element_shop_cometa_default_text.y = display.contentCenterY - 81
+    element_shop_cometa_default_text:setFillColor( 255, 255, 255 )
+
+    local element_shop_cometa_default_text_buy = display.newText(scene_group, "Выбрана", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
+    element_shop_cometa_default_text_buy.x = display.contentWidth + 5
+    element_shop_cometa_default_text_buy.y = display.contentCenterY - 81
+    element_shop_cometa_default_text_buy:setFillColor( 255, 255, 255 )
+
+
+    element_shop_cometa_antired =  display.newImageRect( scene_group, "Sprites/shop/skin_anti_red_icon.png", 50, 50)
+    element_shop_cometa_antired.x = display.contentCenterX - 90
+    element_shop_cometa_antired.y = display.contentCenterY - 60
+
+    local element_shop_cometa_antired_text = display.newText(scene_group, "RedSplash", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
     element_shop_cometa_antired_text.x = display.contentCenterX +48
-    element_shop_cometa_antired_text.y = display.contentCenterY - 81
+    element_shop_cometa_antired_text.y = display.contentCenterY - 20
     element_shop_cometa_antired_text:setFillColor( 255, 255, 255 )
 
-    local element_shop_cometa_antired_text_buy = display.newText( "Купить", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
-    element_shop_cometa_antired_text_buy.x = display.contentWidth + 10
-    element_shop_cometa_antired_text_buy.y = display.contentCenterY - 81
+    local element_shop_cometa_antired_text_buy = display.newText(scene_group, "Выбрать", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
+    element_shop_cometa_antired_text_buy.x = display.contentWidth + 5
+    element_shop_cometa_antired_text_buy.y = display.contentCenterY - 20
     element_shop_cometa_antired_text_buy:setFillColor( 255, 255, 255 )
 
-    local element_shop_cometa_antired_text_price = display.newText( "Купить", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
-    element_shop_cometa_antired_text_price.x = display.contentWidth + 10
-    element_shop_cometa_antired_text_price.y = display.contentCenterY - 81
+    local element_shop_cometa_antired_text_price = display.newText(scene_group, "2000₽", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 12 )
+    element_shop_cometa_antired_text_price.x = display.contentWidth + 5
+    element_shop_cometa_antired_text_price.y = display.contentCenterY - 5
     element_shop_cometa_antired_text_price:setFillColor( 255, 255, 255 )
     -- element_shop_cometa_antired = display.newCircle( display.contentWidth, display.contentHeight, 10)
 
