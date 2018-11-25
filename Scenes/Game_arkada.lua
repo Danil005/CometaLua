@@ -220,32 +220,33 @@ local function enterFrame(event)
 
     local final_move = 0
 
-      if (movement ~= nil) then
-          if (gravity_planet:distance(cmt.sprite.x,cmt.sprite.y) < planet_radius) then
-              composer.gotoScene("Scenes.Death_comet")
-          else
-              final_move = cmt:next_position() + movement[1]
-          end
-      else
-          final_move = cmt:next_position()
-      end
-        if cmt ~= nil and final_move - cmt.sprite.x > 0 then
-          if prev_final_move <= 0 then
-            cmt:animate("high_right")
-          end
-        elseif cmt ~= nil and final_move - cmt.sprite.x < 0 then
-          if prev_final_move >= 0 then
-            cmt:animate("high_left")
-          end
+    if (movement ~= nil) then
+        if (gravity_planet ~= nil and gravity_planet:distance(cmt.sprite.x,cmt.sprite.y) < planet_radius) then
+            composer.gotoScene("Scenes.Death_comet")
         else
-          if cmt ~= nil and prev_final_move ~= 0 then
-            cmt:animate("forward")
-          end
+            final_move = cmt:next_position() + movement[1]
         end
+    else
+        final_move = cmt:next_position()
+    end
 
-        prev_final_move = final_move - cmt.sprite.x
+    if cmt ~= nil and final_move - cmt.sprite.x > 0 then
+      if prev_final_move <= 0 then
+        cmt:animate("high_right")
+      end
+    elseif cmt ~= nil and final_move - cmt.sprite.x < 0 then
+      if prev_final_move >= 0 then
+        cmt:animate("high_left")
+      end
+    else
+      if cmt ~= nil and prev_final_move ~= 0 then
+        cmt:animate("forward")
+      end
+    end
 
-        cmt.sprite.x = final_move
+      prev_final_move = final_move - cmt.sprite.x
+
+      cmt.sprite.x = final_move
 
         if (move_x ~= nil) then
             cmt:new_list(move_x)
@@ -255,7 +256,6 @@ local function enterFrame(event)
         elseif (cmt.sprite.x > WIDTH * 0.90) then
             cmt.sprite.x = WIDTH * 0.90
         end
-        count_numbers()
 
     if (background.y <= display.contentCenterY*3-10) then
         background.y = background.y + speed_background
@@ -268,7 +268,7 @@ local function enterFrame(event)
     else
         background2.y = -display.contentCenterY
     end
-
+    count_numbers()
 
 end
 
