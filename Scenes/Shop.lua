@@ -66,41 +66,41 @@ function scene:create(event)
     button_back.x = display.contentWidth - 270
     button_back.y = display.contentHeight - 450
 
-    element_shop_cometa_antired =  display.newImageRect( scene_group, "Sprites/shop/skin_default_icon.png", 50, 50)
-    element_shop_cometa_antired.x = display.contentCenterX - 90
-    element_shop_cometa_antired.y = display.contentCenterY - 120
+    element_shop_cometa_default   =  display.newImageRect( scene_group, "Sprites/shop/default.png", display.contentWidth - 200, display.contentHeight - 300)
+    element_shop_cometa_default.x = display.contentCenterX
+    element_shop_cometa_default.y = display.contentCenterY
 
-    local element_shop_cometa_default_text = display.newText(scene_group, "Default", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
-    element_shop_cometa_default_text.x = display.contentCenterX +48
-    element_shop_cometa_default_text.y = display.contentCenterY - 81
-    element_shop_cometa_default_text:setFillColor( 255, 255, 255 )
+    element_shop_cometa_red   =  display.newImageRect( scene_group, "Sprites/shop/red_splash.png", display.contentWidth - 200, display.contentHeight - 300)
+    element_shop_cometa_red.x = display.contentCenterX + 999999
+    element_shop_cometa_red.y = display.contentCenterY
 
-    local element_shop_cometa_default_text_buy = display.newText(scene_group, "Выбрана", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
-    element_shop_cometa_default_text_buy.x = display.contentWidth + 5
-    element_shop_cometa_default_text_buy.y = display.contentCenterY - 81
-    element_shop_cometa_default_text_buy:setFillColor( 255, 255, 255 )
+    element_select_button = display.newImageRect( scene_group, "Sprites/shop/select_button.png", 120, 35)
+    element_select_button.x = display.contentCenterX
+    element_select_button.y = display.contentHeight / 2 + 150
+end
 
+function moving(event)
+  if (event.phase == "began") then
+    if event.x >= 250 then
+      element_shop_cometa_red.x = display.contentCenterX
+      element_shop_cometa_red.y = display.contentCenterY
 
-    element_shop_cometa_antired =  display.newImageRect( scene_group, "Sprites/shop/skin_anti_red_icon.png", 50, 50)
-    element_shop_cometa_antired.x = display.contentCenterX - 90
-    element_shop_cometa_antired.y = display.contentCenterY - 60
+      element_shop_cometa_default.x = 999999
+      element_shop_cometa_default.y = 999999
+      print("PRESS RIGHT")
+    end
+    if event.x <= 100 then
+      element_shop_cometa_default.x = display.contentCenterX
+      element_shop_cometa_default.y = display.contentCenterY
 
-    local element_shop_cometa_antired_text = display.newText(scene_group, "RedSplash", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
-    element_shop_cometa_antired_text.x = display.contentCenterX +48
-    element_shop_cometa_antired_text.y = display.contentCenterY - 20
-    element_shop_cometa_antired_text:setFillColor( 255, 255, 255 )
+      element_shop_cometa_red.x = 999999
+      element_shop_cometa_red.y = 999999
+      print("PRESS LEFT")
+    end
+  end
+  if (event.phase =="ended") then
 
-    local element_shop_cometa_antired_text_buy = display.newText(scene_group, "Выбрать", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
-    element_shop_cometa_antired_text_buy.x = display.contentWidth + 5
-    element_shop_cometa_antired_text_buy.y = display.contentCenterY - 20
-    element_shop_cometa_antired_text_buy:setFillColor( 255, 255, 255 )
-
-    local element_shop_cometa_antired_text_price = display.newText(scene_group, "2000₽", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 12 )
-    element_shop_cometa_antired_text_price.x = display.contentWidth + 5
-    element_shop_cometa_antired_text_price.y = display.contentCenterY - 5
-    element_shop_cometa_antired_text_price:setFillColor( 255, 255, 255 )
-    -- element_shop_cometa_antired = display.newCircle( display.contentWidth, display.contentHeight, 10)
-
+  end
 end
 
 function scene:show(event)
@@ -131,6 +131,8 @@ function scene:show(event)
       title_scene.anchorX = 0
 
       Runtime:addEventListener("enterFrame", enterFrame) -- Добавление бесконечного цикла
+      background:addEventListener("touch", moving)
+      background2:addEventListener("touch", moving)
     end
 end
 
