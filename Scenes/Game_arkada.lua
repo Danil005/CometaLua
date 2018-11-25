@@ -46,7 +46,7 @@ local speed_planets = 1
 local speed_background = 0.5
 local speed_asteroids = 2
 local planet_gr = nil
-
+local prev_final_move = 0
 local asteroid_group = nil
 local asteroid_list = nil
 
@@ -212,11 +212,33 @@ local function enterFrame(event)
         planet_gr = nil
     end
 
+    local final_move = 0
+
     if (movement ~= nil) then
-        cmt.sprite.x = cmt:next_position() + movement[1]
+        final_move = cmt:next_position() + movement[1]
     else
-        cmt.sprite.x = cmt:next_position()
+        final_move = cmt:next_position()
     end
+
+    print(final_move)
+
+    if final_move - cmt.sprite.x > 0 then
+      if prev_final_move <= 0 then
+        cmt:animate("high_right")
+      end
+    elseif final_move - cmt.sprite.x < 0 then
+      if prev_final_move >= 0 then
+        cmt:animate("high_left")
+      end
+    else
+      if prev_final_move ~= 0 then
+        cmt:animate("forward")
+      end
+    end
+
+    prev_final_move = final_move - cmt.sprite.x
+
+    cmt.sprite.x = final_move
 
     if (move_x ~= nil) then
         cmt:new_list(move_x)
@@ -265,6 +287,7 @@ function scene:show(event)
           cmt:move()
         end
         cmt:animate("forward")
+        cmt.sprite:scale(cmt.scale, cmt.scale)
         Runtime:addEventListener("enterFrame", enterFrame) -- Добавление бесконечного цикла
         background:addEventListener("touch",controller)
         background2:addEventListener("touch",controller)

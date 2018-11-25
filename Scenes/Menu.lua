@@ -98,6 +98,7 @@ function scene:show(event)
       cmt:move()
     end
     cmt:animate("forward")
+    cmt.sprite:scale(cmt.scale, cmt.scale)
     button_settings:addEventListener("touch", settingsTouch)
     button_score_mode:addEventListener("touch", scoreModeTouch)
     Runtime:addEventListener("enterFrame",enterFrame)

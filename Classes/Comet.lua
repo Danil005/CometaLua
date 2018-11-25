@@ -75,7 +75,6 @@ function comet:new(folder_name, power, x, y)
 
 function comet:animate(command)
     self.sprite:setSequence(command)
-    self.sprite:scale(self.scale, self.scale)
     self.sprite:play()
   end
 
