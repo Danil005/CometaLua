@@ -3,35 +3,14 @@ local json = require("json")
 local composer = require("composer")
 local Menu = require("Scenes.Menu")
 local arcade = require("Scenes.Game_arkada")
+local widget = require( "widget" )
+
 local scene = composer.newScene()
-local background = nil
-local image_comet = nil
 local soundOfButton = audio.loadSound("audio/buttonsInMenu.mp3")
 local button_back = nil
-local button_musics_on = nil
-local button_musics_off = nil
-local button_sounds_on = nil
-local button_sounds_off = nil
-local is_mute_musics = false
-local is_mute_sounds = false
 local speed_background = 2
 local background = nil
 local background2 = nil
-
-function save_settings()
-   local saveGame = {}
-     if value then
-    saveGame["value"] = value
-     end
-
-     local jsonSaveGame = json.encode(saveGame)
-
-     local path = system.pathForFile( "saveSettings.json", system.DocumentsDirectory )
-     local file = io.open( path, "w" )
-      file:write( jsonSaveGame )
-     io.close( file )
-    file = nil
-end
 
 
 local function backTouch(event)
@@ -41,35 +20,23 @@ local function backTouch(event)
     end
 end
 
-local function mute_musics(event)
-    if (event.phase == "began") then
-        is_mute_musics = not is_mute_musics
-        if(is_mute_musics) then
-          button_musics_off.alpha = 1
-          button_musics_on.alpha = 0
-          audio.pause(bgMusicInMenu)
-        else
-          button_musics_off.alpha = 0
-          button_musics_on.alpha = 1
-          audio.resume(bgMusicInMenu)
-        end
-    end
-end
+local function scrollListener( event )
 
-local function mute_sound(event)
-    if (event.phase == "began") then
-        audio.play(soundOfButton)
-        is_mute_sounds = not is_mute_sounds
-        if(is_mute_sounds) then
-            button_sounds_off.alpha = 1
-            button_sounds_on.alpha = 0
-            audio.setVolume(0, { soundOfButton = soundOfButton })
-        else
-            button_sounds_off.alpha = 0
-            button_sounds_on.alpha = 1
-            audio.setVolume(1, { soundOfButton = soundOfButton })
+    local phase = event.phase
+    if ( phase == "began" ) then print( "Scroll view was touched" )
+    elseif ( phase == "moved" ) then print( "Scroll view was moved" )
+    elseif ( phase == "ended" ) then print( "Scroll view was released" )
+    end
+
+    if ( event.limitReached ) then
+        if ( event.direction == "up" ) then print( "Reached bottom limit" )
+        elseif ( event.direction == "down" ) then print( "Reached top limit" )
+        elseif ( event.direction == "left" ) then print( "Reached right limit" )
+        elseif ( event.direction == "right" ) then print( "Reached left limit" )
         end
     end
+
+    return true
 end
 
 local function enterFrame(event)
@@ -103,26 +70,27 @@ function scene:create(event)
     button_back.x = display.contentWidth - 270
     button_back.y = display.contentHeight - 450
 
-    button_musics_on = display.newImageRect( scene_group, "Sprites/knopka_muzyka.png", 60,61)
-    button_musics_on.x = display.contentCenterX - 40
-    button_musics_on.y = display.contentCenterY
+    element_shop_cometa_antired =  display.newImageRect( scene_group, "Sprites/shop/skin_anti_red_icon.png", 50, 50)
+    element_shop_cometa_antired.x = display.contentCenterX - 90
+    element_shop_cometa_antired.y = display.contentCenterY - 120
 
-    button_musics_off = display.newImageRect(scene_group,"Sprites/knopka_net_muzyka.png", 60,61)
-    button_musics_off.x = display.contentCenterX - 40
-    button_musics_off.y = display.contentCenterY
-    button_musics_off.alpha = 0
+    local element_shop_cometa_antired_text = display.newText( "Анти-красный", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
+    element_shop_cometa_antired_text.x = display.contentCenterX +48
+    element_shop_cometa_antired_text.y = display.contentCenterY - 81
+    element_shop_cometa_antired_text:setFillColor( 255, 255, 255 )
 
-    button_sounds_on = display.newImageRect( scene_group, "Sprites/knopka_zvuk.png", 60,61)
-    button_sounds_on.x = display.contentCenterX + 40
-    button_sounds_on.y = display.contentCenterY
+    local element_shop_cometa_antired_text_buy = display.newText( "Купить", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
+    element_shop_cometa_antired_text_buy.x = display.contentWidth + 10
+    element_shop_cometa_antired_text_buy.y = display.contentCenterY - 81
+    element_shop_cometa_antired_text_buy:setFillColor( 255, 255, 255 )
 
-    button_sounds_off = display.newImageRect( scene_group, "Sprites/knopka_net_zvuka.png", 60,61)
-    button_sounds_off.x = display.contentCenterX + 40
-    button_sounds_off.y = display.contentCenterY
-    button_sounds_off.alpha = 0
+    local element_shop_cometa_antired_text_price = display.newText( "Купить", display.contentWidth, display.contentHeight, 200, 100, native.systemFont, 16 )
+    element_shop_cometa_antired_text_price.x = display.contentWidth + 10
+    element_shop_cometa_antired_text_price.y = display.contentCenterY - 81
+    element_shop_cometa_antired_text_price:setFillColor( 255, 255, 255 )
+    -- element_shop_cometa_antired = display.newCircle( display.contentWidth, display.contentHeight, 10)
 
-
-    end
+end
 
 function scene:show(event)
     local scene_group = self.view
@@ -130,10 +98,19 @@ function scene:show(event)
 
       button_back:addEventListener("touch", backTouch)
 
-      button_musics_on:addEventListener("touch", mute_musics)
-      button_musics_off:addEventListener("touch",mute_musics)
-      button_sounds_on:addEventListener("touch",mute_sound)
-      button_sounds_off:addEventListener("touch",mute_sound)
+      -- local scrollView = widget.newScrollView(
+      --     {
+      --         top = 100,
+      --         left = 10,
+      --         width = WIDTH,
+      --         height = HEIGHT,
+      --         scrollWidth = 600,
+      --         scrollHeight = 800,
+      --         listener = scrollListener
+      --     }
+      -- )
+
+      -- scrollView:insert()
 
       title_scene = display.newImageRect("Sprites/nastroyki.png", 168,33)
       scene_group:insert(title_scene)
@@ -150,14 +127,8 @@ end
 function scene:hide(event)
     Runtime:removeEventListener("enterFrame",enterFrame)
     button_back:removeEventListener("touch", backTouch)
-    button_musics_on:removeEventListener("touch", mute_musics)
-    button_musics_off:removeEventListener("touch",mute_musics)
-    button_sounds_on:removeEventListener("touch",mute_sound)
-    button_sounds_off:removeEventListener("touch",mute_sound)
-
     display.remove(title_scene)
 end
-
 
 
 scene:addEventListener("create",scene)
