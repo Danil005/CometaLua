@@ -19,10 +19,13 @@ local is_mute_sounds = false
 
 local function backTouch(event)
     if(event.phase == "began") then
-      Saving.is_mute_musics = is_mute_musics
-      Saving.is_mute_sounds = is_mute_sounds
+      local save_data = {
+          ["is_mute_musics"] = is_mute_musics,
+          ["is_mute_sounds"] = is_mute_sounds,
+          ["scores"] = 0
+      }
+      Saving:toFile("setting.json", save_data)
       audio.play(soundOfButton)
-      Saving:toFile()
       composer.gotoScene("Scenes.Menu")
     end
 end
@@ -132,9 +135,7 @@ function scene:show(event)
 --    is_mute_sounds = k[2]
     if(event.phase == "did") then
         button_back:addEventListener("touch", backTouch)
-        Saving.is_mute_musics = is_mute_musics
-        Saving.is_mute_sounds = is_mute_sounds
-        Saving:toFile()
+
 
         button_musics_on:addEventListener("touch", mute_musics)
         button_musics_off:addEventListener("touch",mute_musics)
