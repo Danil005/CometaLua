@@ -3,14 +3,6 @@ local gravity = require("Classes.Gravity")
 require("Classes.Comet")
 require("Classes.Gravity")
 
-local physics = require( "physics" )
-physics.start()  -- Start the physics engine
-physics.setGravity( 0, 0 )  -- Set "space" gravity
-
--- Set radial gravity simulation values
-local fieldRadius = 100
-local fieldPower = 0.4
-
 local scene = composer.newScene()
 
 local options =
@@ -140,7 +132,7 @@ local function generate_planet()
     local side = math.random(100,160)
     local form = math.random(1,4)
 
-    planet = display.newImageRect(list_planets[form],2,side,side)
+    planet = display.newImageRect(scene_group,list_planets[form],2,side,side)
     planet_circles[1] = display.newImageRect(list_planets[form],3,side*1.3,side*1.3)
     planet_circles[2] = display.newImageRect(list_planets[form],4,side*2,side*2)
 
@@ -172,15 +164,30 @@ end
 
 local delta_speed = 0.0005
 
+local function intersect(ast)
+    if (ast.x > cmt.sprite.x and ast.x+40 < cmt.sprite.x + 60) then
+        if (ast.y +40 > cmt.sprite.y and ast.y < cmt.sprite.y + 60) then
+            return true
+        end
+    end
+    return false
+end
+
 local function check_with_asteroid()
     for i = 1,#asteroid_list do
-        if (asteroid_list[i].x > mt.sprite.x and asteroid_list[i].x <mt.sprite.x) then
+        if (intersect(asteroid_list[i])) then
+            print(1)
+            display.remove(asteroid_list[i])
+            table.remove(asteroid_list,i)
         end
     end
 end
 
+local is_life = true
+
 --Бесконечный цикл
 local function enterFrame(event)
+
     speed_planets = speed_planets + delta_speed
     speed_background = speed_background  + delta_speed
     local movement = nil
@@ -200,7 +207,7 @@ local function enterFrame(event)
     if (planet == nil) then
         generate_planet()
         gravity_planet = Gravity:new(planet_gr.x,planet_gr.y,{planet_radius*1.3,4},{planet_radius*2.5,1})
-    else
+    elseif (cmt ~= nil) then
         movement = gravity_planet:gravity_2(cmt.sprite.x,cmt.sprite.y)
         planet_gr.y = planet_gr.y + movement[2] + speed_planets
         gravity_planet.y = gravity_planet.y + speed_planets + movement[2]
@@ -214,40 +221,42 @@ local function enterFrame(event)
 
     local final_move = 0
 
-    if (movement ~= nil) then
-        final_move = cmt:next_position() + movement[1]
-    else
-        final_move = cmt:next_position()
-    end
-
-    print(final_move)
-
-    if final_move - cmt.sprite.x > 0 then
-      if prev_final_move <= 0 then
-        cmt:animate("high_right")
+      if (movement ~= nil) then
+          if (gravity_planet:distance(cmt.sprite.x,cmt.sprite.y) < planet_radius) then
+              composer.gotoScene("Scenes.Death_comet")
+          else
+              final_move = cmt:next_position() + movement[1]
+          end
+      else
+          final_move = cmt:next_position()
       end
-    elseif final_move - cmt.sprite.x < 0 then
-      if prev_final_move >= 0 then
-        cmt:animate("high_left")
-      end
-    else
-      if prev_final_move ~= 0 then
-        cmt:animate("forward")
-      end
-    end
+        if cmt ~= nil and final_move - cmt.sprite.x > 0 then
+          if prev_final_move <= 0 then
+            cmt:animate("high_right")
+          end
+        elseif cmt ~= nil and final_move - cmt.sprite.x < 0 then
+          if prev_final_move >= 0 then
+            cmt:animate("high_left")
+          end
+        else
+          if cmt ~= nil and prev_final_move ~= 0 then
+            cmt:animate("forward")
+          end
+        end
 
-    prev_final_move = final_move - cmt.sprite.x
+        prev_final_move = final_move - cmt.sprite.x
 
-    cmt.sprite.x = final_move
+        cmt.sprite.x = final_move
 
-    if (move_x ~= nil) then
-        cmt:new_list(move_x)
-    end
-    if (cmt.sprite.x < 30) then
-        cmt.sprite.x = 30
-    elseif (cmt.sprite.x > WIDTH * 0.90) then
-        cmt.sprite.x = WIDTH * 0.90
-    end
+        if (move_x ~= nil) then
+            cmt:new_list(move_x)
+        end
+        if (cmt.sprite.x < 30) then
+            cmt.sprite.x = 30
+        elseif (cmt.sprite.x > WIDTH * 0.90) then
+            cmt.sprite.x = WIDTH * 0.90
+        end
+        count_numbers()
 
     if (background.y <= display.contentCenterY*3-10) then
         background.y = background.y + speed_background
@@ -261,7 +270,6 @@ local function enterFrame(event)
         background2.y = -display.contentCenterY
     end
 
-    count_numbers()
 
 end
 
@@ -278,6 +286,7 @@ function scene:create(event)
 end
 
 function scene:show(event)
+    local scene_group = self.view
     if (event.phase == "did") then
         cmt = comet:new("default",2,display.contentCenterX,display.contentCenterY*1.5)
         cmt.sprite:scale(0.5,0.5)
@@ -291,8 +300,10 @@ function scene:show(event)
         Runtime:addEventListener("enterFrame", enterFrame) -- Добавление бесконечного цикла
         background:addEventListener("touch",controller)
         background2:addEventListener("touch",controller)
+
       --  background:addEventListener("touch", playAudio)
     end
+    table.insert(scene_group,table_after_death)
 end
 
 function scene:hide(event)
@@ -300,6 +311,8 @@ function scene:hide(event)
     background:removeEventListener("touch",controller)
     background2:removeEventListener("touch",controller)
     display.remove(cmt.sprite)
+    display.remove(planet_gr)
+    display.remove(asteroid_group)
   --  background:removeEventListener("touch", soundOfComet)
 end
 

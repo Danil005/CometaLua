@@ -4,6 +4,7 @@ require("Classes.Comet")
 
 local scene = composer.newScene()
 
+
 --Переменные кнопок
 local background3 = nil
 local background4 = nil
@@ -77,16 +78,16 @@ function scene:create(event)
     button_score_mode.x = display.contentCenterX
     button_score_mode.y = display.contentCenterY*1.7
 
-
 end
 
-
-
 function scene:show(event)
+  --[[
   result = true;
   result = load_settings()
   is_mute_musics = not result
-  if(is_mute_musics) then
+  ]]
+  Saving:fromFile()
+  if(Saving.is_mute_musics) then
       audio.pause(bgMusicInMenu)
   else
       audio.resume(bgMusicInMenu)
@@ -105,19 +106,19 @@ function scene:show(event)
   end
 end
 
-function load_settings()
-      local path = system.pathForFile( "settings.json" )
-      local file = io.open( path, "r" )
-      if file then
-          local saveData = file:read( "*a" )
-          --print(saveData)
-          io.close( file )
-          local jsonRead = json.decode(saveData)
-          result = jsonRead.flagAudio
-          return result
-        end
-      return nil
-  end
+-- function load_settings()
+--       local path = system.pathForFile( "settings.json" )
+--       local file = io.open( path, "r" )
+--       if file then
+--           local saveData = file:read( "*a" )
+--           --print(saveData)
+--           io.close( file )
+--           local jsonRead = json.decode(saveData)
+--           result = jsonRead.flagAudio
+--           return result
+--         end
+--       return nil
+--   end
 
 function scene:hide(event)
 
