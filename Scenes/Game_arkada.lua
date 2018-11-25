@@ -2,6 +2,7 @@ local composer = require("composer")
 local gravity = require("Classes.Gravity")
 require("Classes.Comet")
 require("Classes.Gravity")
+require("Classes.Animations")
 
 local physics = require( "physics" )
 physics.start()  -- Start the physics engine
@@ -189,8 +190,6 @@ local function enterFrame(event)
     else
         asteroid_group.y = asteroid_group.y + speed_asteroids
     end
-
-
 
     if (asteroid_group.y > HEIGHT*1.2) then
         display.remove(asteroid_group)
