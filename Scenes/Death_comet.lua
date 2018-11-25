@@ -17,10 +17,13 @@ local function enterFrame(event)
 end
 
 local function toMenu(event)
+    --composer.getScene("Scenes.Game_arkada"):destroyScene()
+      --composer.getScene("Scenes.Game_arkada"):createScene()
     composer.gotoScene("Scenes.Menu")
 end
 
 function scene:show(event)
+    print(SCORE)
     local scene_group = self.view
     speed_background = 2
     background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
@@ -34,7 +37,7 @@ function scene:show(event)
     back:setFillColor(74/255,117/255,247/255)
     local optionsText =
     {
-        text = "Ваша комета канула в лету...\n\nОчки: " .. 0,
+        text = "Потрачено...\n\nОчки: " .. math.floor(SCORE),
         x = display.contentCenterX,
         y = display.contentCenterY,
         width = 240,

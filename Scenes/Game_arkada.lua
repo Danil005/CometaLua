@@ -79,7 +79,7 @@ function M.init( options )
     M.format = "%" .. prefix .. opt.maxDigits .. "d"
 
     -- Create the score display object
-    M.scoreText = display.newText( string.format( M.format, 0 ), opt.x, opt.y, opt.font, opt.fontSize )
+    M.scoreText = display.newText(scene.view, string.format( M.format, 0 ), opt.x, opt.y, opt.font, opt.fontSize )
 
     return M.scoreText
 end
@@ -222,6 +222,8 @@ local function enterFrame(event)
 
     if (movement ~= nil) then
         if (gravity_planet ~= nil and gravity_planet:distance(cmt.sprite.x,cmt.sprite.y) < planet_radius) then
+            SCORE = M.get()
+            
             composer.gotoScene("Scenes.Death_comet")
         else
             final_move = cmt:next_position() + movement[1]
