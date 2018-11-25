@@ -123,7 +123,7 @@ function scene:show(event)
 
       -- scrollView:insert()
 
-      title_scene = display.newImageRect("Sprites/nastroyki.png", 168,33)
+      title_scene = display.newImageRect("Sprites/shop/shop_text.png", 168,33)
       scene_group:insert(title_scene)
       title_scene.x = display.contentCenterX - 82.5
       title_scene.y = display.contentCenterY - 210

@@ -27,12 +27,7 @@ end
 
 
 
-function Save:toFile(path)
-    local save_data = {
-        ["is_mute_musics"] = self.is_mute_musics,
-        ["is_mute_sounds"] = self.is_mute_sounds,
-        ["scores"] = self.scores
-    }
+function Save:toFile(path, save_data)
     local file, errorString = io.open(system.pathForFile( path, system.ResourceDirectory), "w")
     if not file then
         print("Error: " .. errorString)
