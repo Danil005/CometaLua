@@ -2,6 +2,15 @@ local composer = require("composer")
 local gravity = require("Classes.Gravity")
 require("Classes.Comet")
 require("Classes.Gravity")
+
+local physics = require( "physics" )
+physics.start()  -- Start the physics engine
+physics.setGravity( 0, 0 )  -- Set "space" gravity
+
+-- Set radial gravity simulation values
+local fieldRadius = 100
+local fieldPower = 0.4
+
 local scene = composer.newScene()
 
 local options =
@@ -35,10 +44,11 @@ local planet_circles = {}
 local planet_radius = nil
 local speed_planets = 1
 local speed_background = 0.5
+local speed_asteroids = 2
 local planet_gr = nil
 
-local list_asteroids = {}
-
+local asteroid_group = nil
+local asteroid_list = nil
 
 --[[
 local soundOfComet = audio.loadSound("audio/soundOfComet.mp3")
@@ -109,11 +119,17 @@ local options_for_asteroids =
 local image_sheet_asteroids = graphics.newImageSheet("Sprites/asteroidcr.png",options_for_asteroids)
 
 local function generate_asteroids()
+    asteroid_group = display.newGroup()
     local count_asteroids = math.random(2,4)
-    for i =1, count_asteroids do
-        list_asteroids[i] = display.newImageRect(image_sheet_asteroids,2,40,40)
+    asteroid_list = {}
+    for i = 1, count_asteroids do
+        asteroid_list[i] = display.newImageRect(image_sheet_asteroids,2,40,40)
         local temp_x = math.random(10,WIDTH-10)
-        list_asteroids[i].x = temp_x
+        local temp_y = math.random(-20,10)
+        asteroid_list[i].x = temp_x
+        asteroid_list[i].y = temp_y
+        asteroid_group:insert(asteroid_list[i])
+
     end
 end
 
@@ -126,14 +142,15 @@ local function generate_planet()
 
     planet = display.newImageRect(list_planets[form],2,side,side)
     planet_circles[1] = display.newImageRect(list_planets[form],3,side*1.3,side*1.3)
-    planet_circles[2] = display.newImageRect(list_planets[form],4,side*1.5,side*1.5)
+    planet_circles[2] = display.newImageRect(list_planets[form],4,side*2,side*2)
 
     planet_gr = display.newGroup()
     planet_gr:insert(planet_circles[2])
     planet_gr:insert(planet_circles[1])
     planet_gr:insert(planet)
-    planet_gr.x = display.contentCenterX
-    planet_gr.y = 0
+    local temp_x = math.random(10,WIDTH-10)
+    planet_gr.x = temp_x
+    planet_gr.y = -100
     planet_radius = side / 2
 
 end
@@ -153,18 +170,38 @@ local function controller(event)
     end
 end
 
+local delta_speed = 0.0005
+
+local function check_with_asteroid()
+    for i = 1,#asteroid_list do
+        if (asteroid_list[i].x > mt.sprite.x and asteroid_list[i].x <mt.sprite.x) then
+        end
+    end
+end
+
 --Бесконечный цикл
 local function enterFrame(event)
+    speed_planets = speed_planets + delta_speed
+    speed_background = speed_background  + delta_speed
     local movement = nil
-    if (#list_asteroids == 0) then
+    if (asteroid_group == nil) then
         generate_asteroids()
+    else
+        asteroid_group.y = asteroid_group.y + speed_asteroids
+    end
+
+
+
+    if (asteroid_group.y > HEIGHT*1.2) then
+        display.remove(asteroid_group)
+        asteroid_group = nil
     end
 
     if (planet == nil) then
         generate_planet()
-        gravity_planet = Gravity:new(planet_gr.x,planet_gr.y,{planet_radius*1.3,6},{planet_radius*1.6,4})
+        gravity_planet = Gravity:new(planet_gr.x,planet_gr.y,{planet_radius*1.3,4},{planet_radius*2.5,1})
     else
-        movement = gravity_planet:gravity(cmt.sprite.x,cmt.sprite.y)
+        movement = gravity_planet:gravity_2(cmt.sprite.x,cmt.sprite.y)
         planet_gr.y = planet_gr.y + movement[2] + speed_planets
         gravity_planet.y = gravity_planet.y + speed_planets + movement[2]
     end
@@ -180,6 +217,7 @@ local function enterFrame(event)
     else
         cmt.sprite.x = cmt:next_position()
     end
+
     if (move_x ~= nil) then
         cmt:new_list(move_x)
     end
@@ -199,10 +237,6 @@ local function enterFrame(event)
         background2.y = background2.y + speed_background
     else
         background2.y = -display.contentCenterY
-    end
-    for i = 1,#list_asteroids do
-        local moved = math.random(1,3)
-        list_asteroids[i].y = list_asteroids[i].y + moved
     end
 
     count_numbers()
@@ -225,6 +259,7 @@ function scene:show(event)
     if (event.phase == "did") then
         cmt = comet:new("default",2,display.contentCenterX,display.contentCenterY*1.5)
         cmt.sprite:scale(0.5,0.5)
+
         cmt:new_list(120)
         for i = 1, 20 do
           cmt:move()

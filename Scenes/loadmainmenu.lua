@@ -17,27 +17,27 @@ end
 
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )
-  local sceneGroup = self.view
+    local sceneGroup = self.view
 
-  print( "loadgame: show event" )
+    print( "loadgame: show event" )
 
-  loadingImage = display.newImageRect( "Sprites/loading_Montazhnaya_oblast_1.png", 480, 320)
-  loadingImage.x = 240; loadingImage.y = 160
-  sceneGroup:insert( loadingImage )
+    loadingImage = display.newImageRect( "Sprites/loading_Montazhnaya_oblast_1.png", 480, 320)
+    loadingImage.x = 240; loadingImage.y = 160
+    sceneGroup:insert( loadingImage )
 
-  local changeScene = function()
-      composer.gotoScene( "Scenes.Game_arkada", "flipFadeOutIn", 500 )
-  end
-  myTimer = timer.performWithDelay( 1000, changeScene, 1 )
+    local changeScene = function()
+        composer.gotoScene( "Scenes.Game_arkada", "flipFadeOutIn", 500 )
+    end
+    myTimer = timer.performWithDelay( 1000, changeScene, 1 )
 
 end
 
 -- Called when scene is about to move offscreen:
 function scene:hide()
 
-  if myTimer then timer.cancel( myTimer ); end
+    if myTimer then timer.cancel( myTimer ); end
 
-  print( "loadgame: hide event" )
+    print( "loadgame: hide event" )
 
 end
 

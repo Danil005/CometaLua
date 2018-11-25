@@ -1,6 +1,7 @@
 -- Scene Settings
 
 local composer = require("composer")
+local json = require( "json" )
 local Menu = require("Scenes.Menu")
 local scene = composer.newScene()
 
@@ -13,14 +14,57 @@ local button_musics_off = nil
 local button_sounds_on = nil
 local button_sounds_off = nil
 
+local path = system.pathForFile("comet_data.json", system.DocumentsDirectory )
+
 local is_mute_musics = false
 local is_mute_sounds = false
 
 local function backTouch(event)
     if(event.phase == "began") then
       audio.play(soundOfButton)
+      saved_data()
       composer.gotoScene("Scenes.Menu")
     end
+end
+
+local function saved_data(scr)
+    local temp = load_data()
+    local scores
+    if (scr == 0 or temp[3] == nil or temp[3] == 0) then
+        scores = 0
+    elseif (scr > 0) then
+        scores = scr
+    else
+        scores = temp[3]
+    end
+    local data = {
+        is_mute_musics,
+        is_mute_sounds,
+        scores
+    }
+    local file, errorString = io.open(path,"w")
+    if not file then
+        print("ВСЕ В ЖОПЕЕЕЕЕ")
+    else
+        file:write(json.encode(data))
+        print(json.encode(data))
+        io.close(file)
+    end
+    file = nil
+end
+
+local function load_data()
+    local data = {}
+    local file, errorString = io.open(path,"r")
+    if not file then
+        print( "File error: " .. errorString )
+    else
+        data = json.decode( file:read( "*a" ) )
+        io.close( file )
+    end
+
+    file = nil
+    return data
 end
 
 local function mute_musics(event)
@@ -83,21 +127,24 @@ end
 
 function scene:show(event)
     local scene_group = self.view
+    local k = load_data()
+    is_mute_musics = k[1]
+    is_mute_sounds = k[2]
     if(event.phase == "did") then
-      button_back:addEventListener("touch", backTouch)
+        button_back:addEventListener("touch", backTouch)
 
-      button_musics_on:addEventListener("touch", mute_musics)
-      button_musics_off:addEventListener("touch",mute_musics)
+        button_musics_on:addEventListener("touch", mute_musics)
+        button_musics_off:addEventListener("touch",mute_musics)
 
-      button_sounds_on:addEventListener("touch",mute_sound)
-      button_sounds_off:addEventListener("touch",mute_sound)
+        button_sounds_on:addEventListener("touch",mute_sound)
+        button_sounds_off:addEventListener("touch",mute_sound)
 
-      title_scene = display.newText( "Настройки", 0, 0, native.systemFont, 30 )
-      scene_group:insert(title_scene)
-      title_scene.x = display.contentCenterX - 70
-      title_scene.y = display.contentCenterY - 207
-      title_scene:setFillColor( 1, 1, 1 )
-      title_scene.anchorX = 0
+        title_scene = display.newText( "Настройки", 0, 0, native.systemFont, 30 )
+        scene_group:insert(title_scene)
+        title_scene.x = display.contentCenterX - 70
+        title_scene.y = display.contentCenterY - 207
+        title_scene:setFillColor( 1, 1, 1 )
+        title_scene.anchorX = 0
     end
 end
 

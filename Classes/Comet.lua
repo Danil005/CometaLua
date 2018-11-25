@@ -14,7 +14,7 @@ function comet:new(folder_name, power, x, y)
       sheetContentWidth = 5000,
       sheetContentHeight = 2500
     }
-    print("images/" .. folder_name .. "/forward.png")
+  --  print("images/" .. folder_name .. "/forward.png")
     local forward_comet_sheet = graphics.newImageSheet("images/" .. folder_name .. "/forward.png", comet_anim_options)
     local left_comet_sheet_1 = graphics.newImageSheet( "images/" .. folder_name .. "/left_1.png", comet_anim_options)
     local right_comet_sheet_1 = graphics.newImageSheet( "images/" .. folder_name .. "/right_1.png", comet_anim_options)
