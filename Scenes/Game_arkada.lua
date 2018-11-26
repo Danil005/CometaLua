@@ -1,5 +1,5 @@
 local composer = require("composer")
-local gravity = require("Classes.Gravity")
+-- local gravity = require("Classes.Gravity")
 require("Classes.Comet")
 require("Classes.Gravity")
 require("Classes.Animations")
@@ -40,66 +40,23 @@ local speed_background = 0.5
 local speed_asteroids = 2
 local planet_gr = nil
 local prev_final_move = 0
-local asteroid_group = nil
 local asteroid_list = nil
+local button_start = nil
+local text_score = nil
 
---[[
+
 local soundOfComet = audio.loadSound("audio/soundOfComet.mp3")
 local backgroundMusic = audio.loadStream("audio/backgroundMusic.mp3")
 audio.play( backgroundMusic, {channel, loops=-1, fadein=50000 })
 audio.fade( { channel=1, time=6680, volume=0.5 } )
 function playAudio(event)
   if(event.phase == "ended") then
-  --  audio.setVolume(0)
-    --audio.play( soundOfComet )
+    audio.setVolume(0)
+    audio.play( soundOfComet )
   end
 end
-]]
+
 local gravity_planet = nil
-
-local M = {}
-
-M.score = 0  -- Set the score to 0 initially
-
-function M.init( options )
-
-    local customOptions = options or {}
-    local opt = {}
-    opt.fontSize = customOptions.fontSize or 24
-    opt.font = customOptions.font or native.systemFont
-    opt.x = customOptions.x or display.contentCenterX
-    opt.y = customOptions.y or opt.fontSize*0.5
-    opt.maxDigits = customOptions.maxDigits or 6
-    opt.leadingZeros = customOptions.leadingZeros or false
-
-    local prefix = ""
-    if ( opt.leadingZeros ) then
-        prefix = "0"
-    end
-    M.format = "%" .. prefix .. opt.maxDigits .. "d"
-
-    -- Create the score display object
-    M.scoreText = display.newText(scene.view, string.format( M.format, 0 ), opt.x, opt.y, opt.font, opt.fontSize )
-
-    return M.scoreText
-end
-
-function M.set( value )
-
-    M.score = tonumber(value)
-    M.scoreText.text = string.format( M.format, M.score )
-end
-
-function M.get()
-
-    return M.score
-end
-
-function M.add( amount )
-
-    M.score = M.score + tonumber(amount)
-    M.scoreText.text = string.format( M.format, M.score )
-end
 
 local options_for_asteroids =
 {
@@ -109,20 +66,18 @@ local options_for_asteroids =
     sheetContentWidth = 1200,
     sheetContentHeight = 110
 }
+
 local image_sheet_asteroids = graphics.newImageSheet("Sprites/asteroidcr.png",options_for_asteroids)
 
 local function generate_asteroids()
-    asteroid_group = display.newGroup()
     local count_asteroids = math.random(2,4)
     asteroid_list = {}
     for i = 1, count_asteroids do
-        asteroid_list[i] = display.newImageRect(image_sheet_asteroids,2,40,40)
+        asteroid_list[i] = display.newImageRect(scene.view,image_sheet_asteroids,2,40,40)
         local temp_x = math.random(10,WIDTH-10)
         local temp_y = math.random(-20,10)
         asteroid_list[i].x = temp_x
         asteroid_list[i].y = temp_y
-        asteroid_group:insert(asteroid_list[i])
-
     end
 end
 
@@ -148,12 +103,6 @@ local function generate_planet()
 
 end
 
-
-local function count_numbers()
-    M.add(speed_planets*0.5)
-end
-
-
 local function controller(event)
     if (event.phase == "began" or event.phase == "moved") then
         move_x = event.x
@@ -178,8 +127,7 @@ local function check_with_asteroid()
     for i = 1,#asteroid_list do
         if (intersect(asteroid_list[i])) then
             print(1)
-            display.remove(asteroid_list[i])
-            table.remove(asteroid_list,i)
+            asteroid_list[i].alpha = 0
         end
     end
 end
@@ -189,18 +137,28 @@ local is_life = true
 --Бесконечный цикл
 local function enterFrame(event)
 
+    SCORE = SCORE + 1
+    text_score.text = "Очки: "..SCORE
+
     speed_planets = speed_planets + delta_speed
     speed_background = speed_background  + delta_speed
     local movement = nil
-    if (asteroid_group == nil) then
+    if (asteroid_list == nil) then
         generate_asteroids()
     else
-        asteroid_group.y = asteroid_group.y + speed_asteroids
-    end
-
-    if (asteroid_group.y > HEIGHT*1.2) then
-        display.remove(asteroid_group)
-        asteroid_group = nil
+        local is_exit = false
+        for i = 1,#asteroid_list do
+            asteroid_list[i].y = asteroid_list[i].y + speed_asteroids
+            if (asteroid_list[i].y > HEIGHT *1.2) then
+                display.remove(asteroid_list[i])
+                is_exit = true
+            else
+                check_with_asteroid(asteroid_list[i])
+            end
+        end
+        if (is_exit) then
+            asteroid_list = nil
+        end
     end
 
     if (planet == nil) then
@@ -222,8 +180,6 @@ local function enterFrame(event)
 
     if (movement ~= nil) then
         if (gravity_planet ~= nil and gravity_planet:distance(cmt.sprite.x,cmt.sprite.y) < planet_radius) then
-            SCORE = M.get()
-            
             composer.gotoScene("Scenes.Death_comet")
         else
             final_move = cmt:next_position() + movement[1]
@@ -270,7 +226,6 @@ local function enterFrame(event)
     else
         background2.y = -display.contentCenterY
     end
-    count_numbers()
 
 end
 
@@ -283,7 +238,17 @@ function scene:create(event)
     background2.x = display.contentCenterX
     background2.y = -display.contentCenterY+1
 
-    M.init({x = display.contentCenterX+90, y = display.contentCenterY/15})
+    local optionsText =
+    {
+        text = "Очки: " .. math.floor(SCORE),
+        x = WIDTH*0.8,
+        y = HEIGHT*0.1,
+        width = 240,
+        font = native.systemFont,
+        fontSize = 20,
+    }
+    text_score = display.newText(optionsText)
+    scene_group:insert(text_score)
 end
 
 function scene:show(event)
@@ -302,7 +267,7 @@ function scene:show(event)
         background:addEventListener("touch",controller)
         background2:addEventListener("touch",controller)
 
-      --  background:addEventListener("touch", playAudio)
+        --background:addEventListener("touch", playAudio)
     end
     table.insert(scene_group,table_after_death)
 end
@@ -313,8 +278,8 @@ function scene:hide(event)
     background2:removeEventListener("touch",controller)
     display.remove(cmt.sprite)
     display.remove(planet_gr)
-    display.remove(asteroid_group)
-  --  background:removeEventListener("touch", soundOfComet)
+    audio.stop(backgroundMusic)
+    --background:removeEventListener("touch", soundOfComet)
 end
 
 scene:addEventListener("create",scene)

@@ -87,6 +87,7 @@ local function enterFrame(event)
 end
 function scene:create(event)
     local scene_group = self.view
+    composer.removeScene("Scenes.Menu")
 
     background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
     background.x = display.contentCenterX
@@ -148,9 +149,9 @@ end
 
 
 function scene:hide(event)
-    Saving.is_mute_musics = is_mute_musics
-    Saving.is_mute_sounds = is_mute_sounds
-    Saving:toFile()
+    -- Saving.is_mute_musics = is_mute_musics
+    -- Saving.is_mute_sounds = is_mute_sounds
+    -- Saving:toFile()
     Runtime:removeEventListener("enterFrame",enterFrame)
     button_back:removeEventListener("touch", backTouch)
     button_musics_on:removeEventListener("touch", mute_musics)

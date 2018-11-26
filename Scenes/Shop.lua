@@ -16,6 +16,7 @@ local background2 = nil
 local function backTouch(event)
     if(event.phase == "began") then
       audio.play(soundOfButton)
+      composer.removeScene("Scenes.Menu")
       composer.gotoScene("Scenes.Menu")
     end
 end
@@ -66,11 +67,11 @@ function scene:create(event)
     button_back.x = display.contentWidth - 270
     button_back.y = display.contentHeight - 450
 
-    element_shop_cometa_default   =  display.newImageRect( scene_group, "Sprites/shop/default.png", display.contentWidth - 200, display.contentHeight - 300)
+    element_shop_cometa_default = display.newImageRect( scene_group, "Sprites/shop/default.png", display.contentWidth - 200, display.contentHeight - 300)
     element_shop_cometa_default.x = display.contentCenterX
     element_shop_cometa_default.y = display.contentCenterY
 
-    element_shop_cometa_red   =  display.newImageRect( scene_group, "Sprites/shop/red_splash.png", display.contentWidth - 200, display.contentHeight - 300)
+    element_shop_cometa_red = display.newImageRect( scene_group, "Sprites/shop/red_splash.png", display.contentWidth - 200, display.contentHeight - 300)
     element_shop_cometa_red.x = display.contentCenterX + 999999
     element_shop_cometa_red.y = display.contentCenterY
 
@@ -79,7 +80,7 @@ function scene:create(event)
     element_select_button.y = display.contentHeight / 2 + 150
 end
 
-function moving(event)
+local function moving(event)
   if (event.phase == "began") then
     if event.x >= 250 then
       element_shop_cometa_red.x = display.contentCenterX
@@ -140,6 +141,8 @@ end
 function scene:hide(event)
     Runtime:removeEventListener("enterFrame",enterFrame)
     button_back:removeEventListener("touch", backTouch)
+    background:removeEventListener("touch", moving)
+    background2:removeEventListener("touch", moving)
     display.remove(title_scene)
 end
 

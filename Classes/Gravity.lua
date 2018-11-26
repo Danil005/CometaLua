@@ -98,7 +98,6 @@ function Gravity:gravity(x,y)
     if (y > self.y) then
       move_planet = 0.2*self:get_strength(x,y)
     end
-    print(math.floor(move_comet+0.5), math.floor(move_planet+0.5))
     return {math.floor(move_comet+0.5), math.floor(move_planet+0.5)}
 end
 
@@ -123,6 +122,5 @@ function Gravity:gravity_2(x, y)
   local strength = self:get_strength(x,y)
   local move_x = x_sign * strength * legs[1] / c_percent
   local move_y = y_sign * strength * legs[2] / c_percent
-  print(math.floor(move_x+0.5), math.floor(move_y+0.5) * 0.5)
   return {math.floor(move_x+0.5), math.floor(move_y+0.5) * 0.5}
 end

@@ -15,11 +15,11 @@ function comet:new(folder_name, power, x, y)
       sheetContentHeight = 2500
     }
   --  print("images/" .. folder_name .. "/forward.png")
-    local forward_comet_sheet = graphics.newImageSheet("images/" .. folder_name .. "/forward.png", comet_anim_options)
-    local left_comet_sheet_1 = graphics.newImageSheet( "images/" .. folder_name .. "/left_1.png", comet_anim_options)
-    local right_comet_sheet_1 = graphics.newImageSheet( "images/" .. folder_name .. "/right_1.png", comet_anim_options)
-    local left_comet_sheet_2 = graphics.newImageSheet( "images/" .. folder_name .. "/left_2.png", comet_anim_options)
-    local right_comet_sheet_2 = graphics.newImageSheet( "images/" .. folder_name .. "/right_2.png", comet_anim_options)
+    local forward_comet_sheet = graphics.newImageSheet("Sprites/" .. folder_name .. "/forward.png", comet_anim_options)
+    local left_comet_sheet_1 = graphics.newImageSheet( "Sprites/" .. folder_name .. "/left_1.png", comet_anim_options)
+    local right_comet_sheet_1 = graphics.newImageSheet( "Sprites/" .. folder_name .. "/right_1.png", comet_anim_options)
+    local left_comet_sheet_2 = graphics.newImageSheet( "Sprites/" .. folder_name .. "/left_2.png", comet_anim_options)
+    local right_comet_sheet_2 = graphics.newImageSheet( "Sprites/" .. folder_name .. "/right_2.png", comet_anim_options)
     local comet_data =
     {
       {

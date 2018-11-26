@@ -17,8 +17,6 @@ local function enterFrame(event)
 end
 
 local function toMenu(event)
-    --composer.getScene("Scenes.Game_arkada"):destroyScene()
-      --composer.getScene("Scenes.Game_arkada"):createScene()
     composer.removeScene( "Scenes.Game_arkada")
     composer.gotoScene("Scenes.Menu")
 end
@@ -54,6 +52,11 @@ function scene:show(event)
     table_after_death:addEventListener("touch",toMenu)
 end
 
+function scene:hide(event)
+    Runtime:removeEventListener("enterFrame",enterFrame)
+end
+
 scene:addEventListener("show",scene)
+scene:addEventListener("hide",scene)
 
 return scene
