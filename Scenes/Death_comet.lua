@@ -19,6 +19,7 @@ end
 local function toMenu(event)
     --composer.getScene("Scenes.Game_arkada"):destroyScene()
       --composer.getScene("Scenes.Game_arkada"):createScene()
+    composer.removeScene( "Scenes.Game_arkada")
     composer.gotoScene("Scenes.Menu")
 end
 
