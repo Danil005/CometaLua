@@ -21,7 +21,7 @@ function Asteroid:new(x, y)
         sheet = asteroid_distortion,
         start = 1,
         count = 12,
-        time = 950,
+        time = 350,
         loopCount = 1
       }
     }

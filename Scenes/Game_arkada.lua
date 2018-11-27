@@ -38,11 +38,11 @@ local speed_planets = 1
 local speed_background = 0.5
 local speed_asteroids = 2
 local planet_gr = nil
-local prev_final_move = 0
+local prev_final_move = nil
 local asteroid_list = nil
 local button_start = nil
 local text_score = nil
-
+SCORE = 0
 
 local soundOfComet = audio.loadSound("audio/soundOfComet.mp3")
 local backgroundMusic = audio.loadStream("audio/backgroundMusic.mp3")
@@ -61,7 +61,7 @@ local options_for_asteroids =
 {
     width = 100,
     height = 110,
-    numFrames = 12,
+    numFrames = 1,
     sheetContentWidth = 1200,
     sheetContentHeight = 110
 }
@@ -72,7 +72,7 @@ local function generate_asteroids()
     local count_asteroids = math.random(2,4)
     asteroid_list = {}
     for i = 1, count_asteroids do
-        asteroid_list[i] = display.newImageRect(scene.view,image_sheet_asteroids,1,40,40)
+        asteroid_list[i] = display.newImageRect(image_sheet_asteroids,1,40,40)
         local temp_x = math.random(10,WIDTH-10)
         local temp_y = math.random(-20,10)
         asteroid_list[i].x = temp_x
@@ -118,25 +118,8 @@ local function distance(ax, ay, bx, by)
 end
 
 local function intersect(asteroid, comet)
-  local asteroid_radius = 20
+  --local asteroid_radius = 20
   return (distance(asteroid.x, asteroid.y, comet.x, comet.y) <= comet.radius and asteroid.y <= comet.y)
-end
-
-local list_animate = nil
-
-local function check_with_asteroid()
-    for i = 1,#asteroid_list do
-        if (intersect(asteroid_list[i], cmt)) then
-            asteroid_list[i].alpha = 0
-            if (list_animate == nil) then
-                list_animate = {}
-              end
-            asteroid_list[i].animation = Asteroid:new(asteroid_list[i].x,asteroid_list[i].y)
-            table.insert(list_animate,a)
-            asteroid_list[i].animation.sprite:scale(0.5,0.5,0.5)
-            asteroid_list[i].animation:animate("destroy")
-        end
-    end
 end
 
 local is_life = true
@@ -145,9 +128,8 @@ local is_life = true
 local function enterFrame(event)
     SCORE = SCORE + 1
     text_score.text = "Очки: "..SCORE
-    print(cmt.poses_list[1])
-    speed_planets = speed_planets + delta_speed
-    speed_background = speed_background  + delta_speed
+    speed_planets = SCORE / 4000
+    speed_background = SCORE / 4000
     local movement = nil
     if (asteroid_list == nil) then
         generate_asteroids()
@@ -162,17 +144,19 @@ local function enterFrame(event)
                 display.remove(asteroid_list[i])
                 is_exit = true
             else
-                check_with_asteroid(asteroid_list[i])
+              if (intersect(asteroid_list[i], cmt) and asteroid_list[i].in_animation ~= 1) then
+                  SCORE = SCORE + math.floor(30 * speed_background)
+                  asteroid_list[i].in_animation = 1
+                  asteroid_list[i].alpha = 0
+                  print("lol")
+                  asteroid_list[i].animation = Asteroid:new(asteroid_list[i].x,asteroid_list[i].y)
+                  asteroid_list[i].animation.sprite:scale(0.5,0.5,0.5)
+                  asteroid_list[i].animation:animate("destroy")
+              end
             end
         end
         if (is_exit) then
             asteroid_list = nil
-            if list_animate ~= nil then
-              for i = 1, #list_animate do
-                  display.remove( list_animate[i].sprite )
-              end
-              list_animate = nil
-            end
         end
     end
 
@@ -192,12 +176,17 @@ local function enterFrame(event)
     end
 
     local final_move = 0
-
     if (movement ~= nil) then
         if (gravity_planet ~= nil and gravity_planet:distance(cmt.x,cmt.y) < planet_radius) then
+          for i = 1,#asteroid_list do
+            display.remove(asteroid_list[i])
+          end
             composer.gotoScene("Scenes.Death_comet")
         else
             final_move = cmt:next_position() + movement[1]
+            if (movement[1] > 0 or movement[2] > 0) then
+              SCORE = SCORE + math.floor(speed_background * 2)
+            end
         end
     else
         final_move = cmt:next_position()
@@ -232,13 +221,13 @@ local function enterFrame(event)
         end
 
     if (background.y <= display.contentCenterY*3-10) then
-        background.y = background.y + speed_background
+        background.y = background.y + speed_background * 3
     else
         background.y = -display.contentCenterY
     end
 
     if (background2.y <= display.contentCenterY*3-10) then
-        background2.y = background2.y + speed_background
+        background2.y = background2.y + speed_background * 3
     else
         background2.y = -display.contentCenterY
     end
@@ -257,8 +246,8 @@ function scene:create(event)
     local optionsText =
     {
         text = "Очки: " .. math.floor(SCORE),
-        x = WIDTH*0.8,
-        y = HEIGHT*0.1,
+        x = 150,
+        y = 10,
         width = 240,
         font = native.systemFont,
         fontSize = 20,

@@ -66,7 +66,7 @@ local function enterFrame(event)
         background4.y = -display.contentCenterY
     end
 
-    if (start_comet and cmt.y < -70) then
+    if (start_comet and cmt.y < -160) then
         start_comet = false
         composer.gotoScene("Scenes.Game_arkada", "fade")
     elseif (start_comet) then
