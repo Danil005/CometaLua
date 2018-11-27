@@ -22,7 +22,7 @@ function Asteroid:new(x, y)
         start = 1,
         count = 12,
         time = 450,
-        loopCount = 0
+        loopCount = 1
       }
     }
     obj.sprite = display.newSprite(asteroid_distortion, asteroid_data) -- Сам спрайт кометы
@@ -37,6 +37,15 @@ function Asteroid:new(x, y)
 function Asteroid:animate(command)
     self.sprite:setSequence(command)
     self.sprite:play()
+
+    local function explode(event)
+       if event.phase == "ended" then
+           self.sprite:removeSelf()
+       end
+    end
+
+    self.sprite:addEventListener("sprite", explode)
+
   end
 
 function Asteroid:get_pos()

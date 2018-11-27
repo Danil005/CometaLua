@@ -1,5 +1,4 @@
 local composer = require("composer")
--- local gravity = require("Classes.Gravity")
 require("Classes.Comet")
 require("Classes.Gravity")
 require("Classes.Animations")
@@ -73,7 +72,7 @@ local function generate_asteroids()
     local count_asteroids = math.random(2,4)
     asteroid_list = {}
     for i = 1, count_asteroids do
-        asteroid_list[i] = display.newImageRect(scene.view,image_sheet_asteroids,2,40,40)
+        asteroid_list[i] = display.newImageRect(scene.view,image_sheet_asteroids,1,40,40)
         local temp_x = math.random(10,WIDTH-10)
         local temp_y = math.random(-20,10)
         asteroid_list[i].x = temp_x
@@ -114,20 +113,29 @@ end
 
 local delta_speed = 0.0005
 
-local function intersect(ast)
-    if (ast.x > cmt.sprite.x and ast.x+40 < cmt.sprite.x + 60) then
-        if (ast.y +40 > cmt.sprite.y and ast.y < cmt.sprite.y + 60) then
-            return true
-        end
-    end
-    return false
+local function distance(ax, ay, bx, by)
+  return math.sqrt((ax - bx)*(ax - bx) + (ay - by)*(ay - by))
 end
+
+local function intersect(asteroid, comet)
+  local asteroid_radius = 20
+  return (distance(asteroid.x, asteroid.y, comet.sprite.x, comet.sprite.y) <= asteroid_radius + comet.radius and asteroid.y <= comet.sprite.y)
+end
+
+local list_animate = nil
 
 local function check_with_asteroid()
     for i = 1,#asteroid_list do
-        if (intersect(asteroid_list[i])) then
+        if (intersect(asteroid_list[i], cmt)) then
             print(1)
             asteroid_list[i].alpha = 0
+            if (list_animate == nil) then
+                list_animate = {}
+              end
+            local a = Asteroid:new(asteroid_list[i].x,asteroid_list[i].y)
+            table.insert(list_animate,a)
+            a.sprite:scale(0.5,0.5,0.5)
+            a:animate("destroy")
         end
     end
 end
@@ -158,6 +166,12 @@ local function enterFrame(event)
         end
         if (is_exit) then
             asteroid_list = nil
+            if list_animate ~= nil then
+              for i = 1, #list_animate do
+                  display.remove( list_animate[i].sprite )
+              end
+              list_animate = nil
+            end
         end
     end
 
@@ -254,9 +268,7 @@ end
 function scene:show(event)
     local scene_group = self.view
     if (event.phase == "did") then
-        cmt = comet:new(current_comet_skin,2,display.contentCenterX,display.contentCenterY*1.5)
-        cmt.sprite:scale(0.5,0.5)
-
+        cmt = comet:new(current_comet_skin, 2, display.contentCenterX, display.contentCenterY*1.5, 0.075)
         cmt:new_list(120)
         for i = 1, 20 do
           cmt:move()
