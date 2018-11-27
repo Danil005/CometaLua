@@ -119,7 +119,7 @@ end
 
 local function intersect(asteroid, comet)
   local asteroid_radius = 20
-  return (distance(asteroid.x, asteroid.y, comet.sprite.x, comet.sprite.y) <= asteroid_radius + comet.radius and asteroid.y <= comet.sprite.y)
+  return (distance(asteroid.x, asteroid.y, comet.x, comet.y) <= comet.radius and asteroid.y <= comet.y)
 end
 
 local list_animate = nil
@@ -132,10 +132,10 @@ local function check_with_asteroid()
             if (list_animate == nil) then
                 list_animate = {}
               end
-            local a = Asteroid:new(asteroid_list[i].x,asteroid_list[i].y)
+            asteroid_list[i].animation = Asteroid:new(asteroid_list[i].x,asteroid_list[i].y)
             table.insert(list_animate,a)
-            a.sprite:scale(0.5,0.5,0.5)
-            a:animate("destroy")
+            asteroid_list[i].animation.sprite:scale(0.5,0.5,0.5)
+            asteroid_list[i].animation :animate("destroy")
         end
     end
 end
@@ -144,7 +144,6 @@ local is_life = true
 
 --Бесконечный цикл
 local function enterFrame(event)
-
     SCORE = SCORE + 1
     text_score.text = "Очки: "..SCORE
 
@@ -156,11 +155,15 @@ local function enterFrame(event)
     else
         local is_exit = false
         for i = 1,#asteroid_list do
+          if (asteroid_list[i].animation ~= nil) then
+            asteroid_list[i].animation:move(0, speed_asteroids)
+          end
             asteroid_list[i].y = asteroid_list[i].y + speed_asteroids
             if (asteroid_list[i].y > HEIGHT *1.2) then
                 display.remove(asteroid_list[i])
                 is_exit = true
             else
+              print(asteroid_list[i].y, cmt.y)
                 check_with_asteroid(asteroid_list[i])
             end
         end
@@ -179,7 +182,7 @@ local function enterFrame(event)
         generate_planet()
         gravity_planet = Gravity:new(planet_gr.x,planet_gr.y,{planet_radius*1.3,4},{planet_radius*2.5,1})
     elseif (cmt ~= nil) then
-        movement = gravity_planet:gravity_2(cmt.sprite.x,cmt.sprite.y)
+        movement = gravity_planet:gravity_2(cmt.x,cmt.y)
         planet_gr.y = planet_gr.y + movement[2] + speed_planets
         gravity_planet.y = gravity_planet.y + speed_planets + movement[2]
     end
@@ -193,7 +196,8 @@ local function enterFrame(event)
     local final_move = 0
 
     if (movement ~= nil) then
-        if (gravity_planet ~= nil and gravity_planet:distance(cmt.sprite.x,cmt.sprite.y) < planet_radius) then
+      print(movement[1])
+        if (gravity_planet ~= nil and gravity_planet:distance(cmt.x,cmt.y) < planet_radius) then
             composer.gotoScene("Scenes.Death_comet")
         else
             final_move = cmt:next_position() + movement[1]
@@ -202,11 +206,11 @@ local function enterFrame(event)
         final_move = cmt:next_position()
     end
 
-    if cmt ~= nil and final_move - cmt.sprite.x > 0 then
+    if cmt ~= nil and final_move - cmt.x > 0 then
       if prev_final_move <= 0 then
         cmt:animate("high_right")
       end
-    elseif cmt ~= nil and final_move - cmt.sprite.x < 0 then
+    elseif cmt ~= nil and final_move - cmt.x < 0 then
       if prev_final_move >= 0 then
         cmt:animate("high_left")
       end
@@ -216,17 +220,17 @@ local function enterFrame(event)
       end
     end
 
-      prev_final_move = final_move - cmt.sprite.x
+      prev_final_move = final_move - cmt.x
 
-      cmt.sprite.x = final_move
+      cmt:new_x(final_move - cmt.x)
 
         if (move_x ~= nil) then
             cmt:new_list(move_x)
         end
-        if (cmt.sprite.x < 30) then
-            cmt.sprite.x = 30
-        elseif (cmt.sprite.x > WIDTH * 0.90) then
-            cmt.sprite.x = WIDTH * 0.90
+        if (cmt.x < 30) then
+            cmt:new_x(30 - cmt.x)
+        elseif (cmt.x > WIDTH * 0.90) then
+            cmt:new_x(WIDTH * 0.90 - cmt.x)
         end
 
     if (background.y <= display.contentCenterY*3-10) then

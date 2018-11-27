@@ -66,6 +66,8 @@ function comet:new(folder_name, power, x, y, scale)
     obj.sprite = display.newSprite(forward_comet_sheet, comet_data) -- Сам спрайт кометы
     obj.sprite.x = x
     obj.sprite.y = y + 0.4 * comet_anim_options.height * scale
+    obj.x = x
+    obj.y = y
     obj.radius = comet_anim_options.width * scale
     obj.poses_list = {} -- здесь будут позиции для плавной анимации
 
@@ -73,6 +75,16 @@ function comet:new(folder_name, power, x, y, scale)
     self.__index = self
     return obj
   end
+
+  function comet:new_x(x)
+    self.sprite.x = self.sprite.x + x
+    self.x = self.x + x
+  end
+
+function comet:new_y(y)
+  self.sprite.y = self.sprite.y + y
+  self.y = self.y + y
+end
 
 function comet:animate(command)
     self.sprite:setSequence(command)
@@ -121,5 +133,6 @@ function comet:next_position()
 end
 
 function comet:move()
-    self.sprite.x = self:next_position()
+  local n_x = self:next_position()
+  self:new_x(n_x - self.x)
 end

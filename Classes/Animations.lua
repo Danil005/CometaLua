@@ -21,7 +21,7 @@ function Asteroid:new(x, y)
         sheet = asteroid_distortion,
         start = 1,
         count = 12,
-        time = 450,
+        time = 250,
         loopCount = 1
       }
     }
@@ -35,17 +35,17 @@ function Asteroid:new(x, y)
   end
 
 function Asteroid:animate(command)
+
+    local function mySpriteListener( event )
+
+         if ( event.phase == "ended" ) then
+              self.sprite:removeSelf()
+              self.sprite = nil
+         end
+    end
     self.sprite:setSequence(command)
     self.sprite:play()
-
-    local function explode(event)
-       if event.phase == "ended" then
-           self.sprite:removeSelf()
-       end
-    end
-
-    self.sprite:addEventListener("sprite", explode)
-
+    self.sprite:addEventListener("sprite", mySpriteListener)
   end
 
 function Asteroid:get_pos()
@@ -58,8 +58,10 @@ end
 -- return scene
 
 function Asteroid:move(x, y)
+if (self.sprite ~= nil) then
   self.sprite.x = self.sprite.x + x
   self.sprite.y = self.sprite.y + y
+end
 end
 
 function Asteroid:set_position(x, y)
@@ -98,6 +100,8 @@ function Button:new(button_name, size_x, size_y, x, y)
   return obj
 end
 
-function Loading:next_frame()
+function Button:next_frame()
   self.image.alpha = self.image.alpha * 0.7
 end
+
+--timer.performWithDelay( 1000, display.remove(test_boom.sprite))

@@ -5,6 +5,17 @@ local scene = composer.newScene()
 
 local backMusic = nil
 
+local options_for_asteroids =
+{
+    width = 100,
+    height = 110,
+    numFrames = 12,
+    sheetContentWidth = 1200,
+    sheetContentHeight = 110
+}
+
+local image_sheet_asteroids = graphics.newImageSheet("Sprites/asteroidcr.png",options_for_asteroids)
+
 --Переменные кнопок
 function scene:create(event)
     local scene_group = self.view
@@ -55,11 +66,11 @@ local function enterFrame(event)
         background4.y = -display.contentCenterY
     end
 
-    if (start_comet and cmt.sprite.y < -70) then
+    if (start_comet and cmt.y < -70) then
         start_comet = false
         composer.gotoScene("Scenes.Game_arkada", "fade")
     elseif (start_comet) then
-        cmt.sprite.y = cmt.sprite.y - 3
+      cmt:new_y(-3)
     end
 end
 
