@@ -95,7 +95,7 @@ function scene:show(event)
   --     audio.resume(backMusic)
   -- end
   if(event.phase == "did") then
-    cmt = comet:new(current_comet_skin, 4, display.contentCenterX+42, display.contentCenterY)
+    cmt = comet:new(current_comet_skin, 4, display.contentCenterX+42, display.contentCenterY, 0.1)
     cmt:new_list(120)
     for i = 1, 20 do
       cmt:move()

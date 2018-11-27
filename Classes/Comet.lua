@@ -1,9 +1,9 @@
 comet = {}
 current_comet_skin = "redsplash"
-function comet:new(folder_name, power, x, y)
+function comet:new(folder_name, power, x, y, scale)
     local obj= {}
     obj.folder = folder_name -- Местоположение текущего скина
-    obj.scale = 0.1
+    obj.scale = scale
     obj.power = power
     -- Дохуя
     local comet_anim_options =
@@ -65,7 +65,7 @@ function comet:new(folder_name, power, x, y)
     }
     obj.sprite = display.newSprite(forward_comet_sheet, comet_data) -- Сам спрайт кометы
     obj.sprite.x = x
-    obj.sprite.y = y
+    obj.sprite.y = y + 0.4 * comet_anim_options.height * scale
     obj.poses_list = {} -- здесь будут позиции для плавной анимации
 
     setmetatable(obj, self)
