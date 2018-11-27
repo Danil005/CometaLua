@@ -1,5 +1,4 @@
 local composer = require("composer")
--- local gravity = require("Classes.Gravity")
 require("Classes.Comet")
 require("Classes.Gravity")
 require("Classes.Animations")
@@ -123,11 +122,20 @@ local function intersect(ast)
     return false
 end
 
+local list_animate = nil
+
 local function check_with_asteroid()
     for i = 1,#asteroid_list do
         if (intersect(asteroid_list[i])) then
             print(1)
             asteroid_list[i].alpha = 0
+            if (list_animate == nil) then
+                list_animate = {}
+              end
+            local a = Asteroid:new(asteroid_list[i].x,asteroid_list[i].y)
+            table.insert(list_animate,a)
+            a.sprite:scale(0.5,0.5,0.5)
+            a:animate("destroy")
         end
     end
 end
@@ -158,6 +166,12 @@ local function enterFrame(event)
         end
         if (is_exit) then
             asteroid_list = nil
+            if list_animate ~= nil then
+              for i = 1, #list_animate do
+                  display.remove( list_animate[i].sprite )
+              end
+              list_animate = nil
+            end
         end
     end
 
