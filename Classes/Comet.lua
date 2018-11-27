@@ -66,6 +66,7 @@ function comet:new(folder_name, power, x, y, scale)
     obj.sprite = display.newSprite(forward_comet_sheet, comet_data) -- Сам спрайт кометы
     obj.sprite.x = x
     obj.sprite.y = y + 0.4 * comet_anim_options.height * scale
+    obj.radius = comet_anim_options.width * scale
     obj.poses_list = {} -- здесь будут позиции для плавной анимации
 
     setmetatable(obj, self)

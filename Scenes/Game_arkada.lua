@@ -72,7 +72,7 @@ local function generate_asteroids()
     local count_asteroids = math.random(2,4)
     asteroid_list = {}
     for i = 1, count_asteroids do
-        asteroid_list[i] = display.newImageRect(scene.view,image_sheet_asteroids,2,40,40)
+        asteroid_list[i] = display.newImageRect(scene.view,image_sheet_asteroids,1,40,40)
         local temp_x = math.random(10,WIDTH-10)
         local temp_y = math.random(-20,10)
         asteroid_list[i].x = temp_x
@@ -113,20 +113,20 @@ end
 
 local delta_speed = 0.0005
 
-local function intersect(ast)
-    if (ast.x > cmt.sprite.x and ast.x+40 < cmt.sprite.x + 60) then
-        if (ast.y +40 > cmt.sprite.y and ast.y < cmt.sprite.y + 60) then
-            return true
-        end
-    end
-    return false
+local function distance(ax, ay, bx, by)
+  return math.sqrt((ax - bx)*(ax - bx) + (ay - by)*(ay - by))
+end
+
+local function intersect(asteroid, comet)
+  local asteroid_radius = 20
+  return (distance(asteroid.x, asteroid.y, comet.sprite.x, comet.sprite.y) <= asteroid_radius + comet.radius and asteroid.y <= comet.sprite.y)
 end
 
 local list_animate = nil
 
 local function check_with_asteroid()
     for i = 1,#asteroid_list do
-        if (intersect(asteroid_list[i])) then
+        if (intersect(asteroid_list[i], cmt)) then
             print(1)
             asteroid_list[i].alpha = 0
             if (list_animate == nil) then
