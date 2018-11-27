@@ -21,7 +21,7 @@ function Asteroid:new(x, y)
         sheet = asteroid_distortion,
         start = 1,
         count = 12,
-        time = 250,
+        time = 950,
         loopCount = 1
       }
     }
@@ -35,10 +35,11 @@ function Asteroid:new(x, y)
   end
 
 function Asteroid:animate(command)
-
+  print(self.sprite.y)
     local function mySpriteListener( event )
 
          if ( event.phase == "ended" ) then
+              self.sprite:removeEventListener("sprite", mySpriteListener)
               self.sprite:removeSelf()
               self.sprite = nil
          end
@@ -46,6 +47,7 @@ function Asteroid:animate(command)
     self.sprite:setSequence(command)
     self.sprite:play()
     self.sprite:addEventListener("sprite", mySpriteListener)
+
   end
 
 function Asteroid:get_pos()

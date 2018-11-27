@@ -127,7 +127,6 @@ local list_animate = nil
 local function check_with_asteroid()
     for i = 1,#asteroid_list do
         if (intersect(asteroid_list[i], cmt)) then
-            print(1)
             asteroid_list[i].alpha = 0
             if (list_animate == nil) then
                 list_animate = {}
@@ -135,7 +134,7 @@ local function check_with_asteroid()
             asteroid_list[i].animation = Asteroid:new(asteroid_list[i].x,asteroid_list[i].y)
             table.insert(list_animate,a)
             asteroid_list[i].animation.sprite:scale(0.5,0.5,0.5)
-            asteroid_list[i].animation :animate("destroy")
+            asteroid_list[i].animation:animate("destroy")
         end
     end
 end
@@ -146,7 +145,7 @@ local is_life = true
 local function enterFrame(event)
     SCORE = SCORE + 1
     text_score.text = "Очки: "..SCORE
-
+    print(cmt.poses_list[1])
     speed_planets = speed_planets + delta_speed
     speed_background = speed_background  + delta_speed
     local movement = nil
@@ -163,7 +162,6 @@ local function enterFrame(event)
                 display.remove(asteroid_list[i])
                 is_exit = true
             else
-              print(asteroid_list[i].y, cmt.y)
                 check_with_asteroid(asteroid_list[i])
             end
         end
@@ -196,7 +194,6 @@ local function enterFrame(event)
     local final_move = 0
 
     if (movement ~= nil) then
-      print(movement[1])
         if (gravity_planet ~= nil and gravity_planet:distance(cmt.x,cmt.y) < planet_radius) then
             composer.gotoScene("Scenes.Death_comet")
         else
@@ -205,9 +202,9 @@ local function enterFrame(event)
     else
         final_move = cmt:next_position()
     end
-
+    if (final_move == nil and prev_final_move ~= nil) or ((final_move ~= nil and prev_final_move == nil)) then
     if cmt ~= nil and final_move - cmt.x > 0 then
-      if prev_final_move <= 0 then
+      if prev_final_move < 0 then
         cmt:animate("high_right")
       end
     elseif cmt ~= nil and final_move - cmt.x < 0 then
@@ -219,6 +216,7 @@ local function enterFrame(event)
         cmt:animate("forward")
       end
     end
+  end
 
       prev_final_move = final_move - cmt.x
 
@@ -273,10 +271,6 @@ function scene:show(event)
     local scene_group = self.view
     if (event.phase == "did") then
         cmt = comet:new(current_comet_skin, 2, display.contentCenterX, display.contentCenterY*1.5, 0.075)
-        cmt:new_list(120)
-        for i = 1, 20 do
-          cmt:move()
-        end
         cmt:animate("forward")
         cmt.sprite:scale(cmt.scale, cmt.scale)
         Runtime:addEventListener("enterFrame", enterFrame) -- Добавление бесконечного цикла
