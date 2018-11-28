@@ -128,8 +128,8 @@ local is_life = true
 local function enterFrame(event)
     SCORE = SCORE + 1
     text_score.text = SCORE
-    speed_planets = SCORE / 400
-    speed_background = SCORE / 400
+    speed_planets = SCORE / 4000
+    speed_background = SCORE / 4000
     local movement = nil
     if (asteroid_list == nil) then
         generate_asteroids()
