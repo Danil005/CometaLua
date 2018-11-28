@@ -127,7 +127,7 @@ local is_life = true
 --Бесконечный цикл
 local function enterFrame(event)
     SCORE = SCORE + 1
-    text_score.text = "Очки: "..SCORE
+    text_score.text = SCORE
     speed_planets = SCORE / 4000
     speed_background = SCORE / 4000
     local movement = nil
@@ -245,7 +245,7 @@ function scene:create(event)
 
     local optionsText =
     {
-        text = "Очки: " .. math.floor(SCORE),
+        text = math.floor(SCORE),
         x = 150,
         y = 10,
         width = 240,
@@ -253,7 +253,7 @@ function scene:create(event)
         fontSize = 20,
     }
     text_score = display.newText(optionsText)
-    scene_group:insert(text_score)
+    scene_group:insert(5, text_score)
 end
 
 function scene:show(event)
