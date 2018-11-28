@@ -128,8 +128,8 @@ local is_life = true
 local function enterFrame(event)
     SCORE = SCORE + 1
     text_score.text = SCORE
-    speed_planets = SCORE / 4000
-    speed_background = SCORE / 4000
+    speed_planets = SCORE / 400
+    speed_background = SCORE / 400
     local movement = nil
     if (asteroid_list == nil) then
         generate_asteroids()
@@ -148,7 +148,6 @@ local function enterFrame(event)
                   SCORE = SCORE + math.floor(30 * speed_background)
                   asteroid_list[i].in_animation = 1
                   asteroid_list[i].alpha = 0
-                  print("lol")
                   asteroid_list[i].animation = Asteroid:new(asteroid_list[i].x,asteroid_list[i].y)
                   asteroid_list[i].animation.sprite:scale(0.5,0.5,0.5)
                   asteroid_list[i].animation:animate("destroy")
@@ -162,7 +161,7 @@ local function enterFrame(event)
 
     if (planet == nil) then
         generate_planet()
-        gravity_planet = Gravity:new(planet_gr.x,planet_gr.y,{planet_radius*1.4,3},{planet_radius*2.5,2})
+        gravity_planet = Gravity:new(planet_gr.x,planet_gr.y,{planet_radius*1.4,3},{planet_radius*2.2,2})
     elseif (cmt ~= nil) then
         movement = gravity_planet:gravity_2(cmt.x,cmt.y)
         planet_gr.y = planet_gr.y + movement[2] + speed_planets
@@ -177,7 +176,7 @@ local function enterFrame(event)
 
     local final_move = 0
     if (movement ~= nil) then
-        if (gravity_planet ~= nil and gravity_planet:distance(cmt.sprite.x,cmt.sprite.y) <= planet_radius) then
+        if (gravity_planet ~= nil and gravity_planet:distance(cmt.x, cmt.y) <= planet_radius - 10) then
           for i = 1,#asteroid_list do
             display.remove(asteroid_list[i])
           end
@@ -265,7 +264,9 @@ function scene:hide(event)
     elseif (event.phase == "did") then
         display.remove(cmt.sprite)
         display.remove(planet_gr)
-        audio.stop(backgroundMusic)
+        if (backgroundMusic ~= nil) then
+          audio.stop(backgroundMusic)
+        end
     end
     --background:removeEventListener("touch", soundOfComet)
 end
@@ -276,7 +277,9 @@ function scene:destroy(event)
     background.bg_2:removeEventListener("touch",controller)
     display.remove(cmt.sprite)
     display.remove(planet_gr)
-    audio.stop(backgroundMusic)
+    if (backgroundMusic ~= nil) then
+      audio.stop(backgroundMusic)
+    end
 end
 
 scene:addEventListener("create",scene)

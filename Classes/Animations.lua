@@ -30,7 +30,6 @@ end
 function Background:move(y)
   self.bg_1.y = self.bg_1.y + y
   self.bg_2.y = self.bg_2.y + y
-  print(self.bg_1.y, self.bg_2.y)
   if (self.bg_1.y - display.contentHeight >= display.contentCenterY) then
     self.bg_1.x = display.contentCenterX
     self.bg_1.y = self.bg_2.y - display.contentHeight
