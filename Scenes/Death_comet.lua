@@ -19,20 +19,34 @@ function scene:show(event)
         background = Background:new(scene_group)
         local table_after_death = display.newGroup()
         local back = display.newRoundedRect( table_after_death,display.contentCenterX, display.contentCenterY, WIDTH/1.5, HEIGHT/2,10 )
-        back:setFillColor(74/255,117/255,247/255)
+        back:setFillColor(0/255,0/255,0/255)
+        back.alpha = 0.7
         local optionsText =
         {
-            text = "Потрачено...\n\nОчки: " .. math.floor(SCORE),
+            text = "wasted",
             x = display.contentCenterX,
-            y = display.contentCenterY,
+            y = display.contentCenterY - 80,
             width = 240,
             font = native.systemFont,
-            fontSize = 20,
+            fontSize = 35,
             align = "center"  -- Alignment parameter
         }
+        local optionsText2 =
+        {
+          text = "\n\nscore: " .. math.floor(SCORE),
+          x = display.contentCenterX,
+          y = display.contentCenterY,
+          width = 240,
+          font = native.systemFont,
+          fontSize = 20,
+          align = "center"  -- Alignment parameter
+        }
         local textResult = display.newText(optionsText)
-        textResult:setFillColor(247/255,167/255,74/255)
+        local textResult2 = display.newText(optionsText2)
+        textResult:setFillColor(231/255,56/255,69/255)
+        textResult2:setFillColor(255/255,255/255,255/255)
         table_after_death:insert(textResult)
+        table_after_death:insert(textResult2)
         scene_group:insert(table_after_death)
         Runtime:addEventListener("enterFrame",enterFrame)
         table_after_death:addEventListener("touch",toMenu)
