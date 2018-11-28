@@ -71,7 +71,7 @@ local function generate_asteroids()
     local count_asteroids = math.random(2,4)
     asteroid_list = {}
     for i = 1, count_asteroids do
-        asteroid_list[i] = display.newImageRect(image_sheet_asteroids,1,40,40)
+        asteroid_list[i] = display.newImageRect(scene.view,image_sheet_asteroids,1,40,40)
         local temp_x = math.random(10,WIDTH-10)
         local temp_y = math.random(-20,10)
         asteroid_list[i].x = temp_x
@@ -87,13 +87,13 @@ local function generate_planet()
     local form = math.random(1,4)
 
     planet = display.newImageRect(scene_group,list_planets[form],2,side,side)
-    planet_circles[1] = display.newImageRect(list_planets[form],3,side*1.3,side*1.3)
+    planet_circles[1] = display.newImageRect(list_planets[form],3,side*1.4,side*1.4)
     planet_circles[2] = display.newImageRect(list_planets[form],4,side*2,side*2)
 
     planet_gr = display.newGroup()
-    planet_gr:insert(2, planet_circles[2])
-    planet_gr:insert(3, planet_circles[1])
-    planet_gr:insert(4, planet)
+    planet_gr:insert(1, planet_circles[2])
+    planet_gr:insert(2, planet_circles[1])
+    planet_gr:insert(3, planet)
     scene_group:insert(3, planet_gr)
     local temp_x = math.random(10,WIDTH-10)
     planet_gr.x = temp_x
@@ -162,7 +162,7 @@ local function enterFrame(event)
 
     if (planet == nil) then
         generate_planet()
-        gravity_planet = Gravity:new(planet_gr.x,planet_gr.y,{planet_radius*1.3,4},{planet_radius*2.5,1})
+        gravity_planet = Gravity:new(planet_gr.x,planet_gr.y,{planet_radius*1.4,3},{planet_radius*2.5,2})
     elseif (cmt ~= nil) then
         movement = gravity_planet:gravity_2(cmt.x,cmt.y)
         planet_gr.y = planet_gr.y + movement[2] + speed_planets
@@ -177,7 +177,7 @@ local function enterFrame(event)
 
     local final_move = 0
     if (movement ~= nil) then
-        if (gravity_planet ~= nil and gravity_planet:distance(cmt.x,cmt.y) < planet_radius) then
+        if (gravity_planet ~= nil and gravity_planet:distance(cmt.sprite.x,cmt.sprite.y) <= planet_radius) then
           for i = 1,#asteroid_list do
             display.remove(asteroid_list[i])
           end
@@ -243,7 +243,7 @@ end
 
 function scene:show(event)
     local scene_group = self.view
-    if (event.phase == "did") then
+    if (event.phase == "will") then
         cmt = comet:new(current_comet_skin, 2, display.contentCenterX, display.contentCenterY*1.5, 0.075)
         cmt:animate("forward")
         cmt.sprite:scale(cmt.scale, cmt.scale)
@@ -252,23 +252,37 @@ function scene:show(event)
         background.bg_2:addEventListener("touch",controller)
 
         --background:addEventListener("touch", playAudio)
+    elseif (event.phase == "did") then
+        table.insert(scene_group, 6, table_after_death)
     end
-    table.insert(scene_group, 6, table_after_death)
 end
 
 function scene:hide(event)
+    if (event.phase == "will") then
+        Runtime:removeEventListener("enterFrame",enterFrame)
+        background.bg_1:removeEventListener("touch",controller)
+        background.bg_2:removeEventListener("touch",controller)
+    elseif (event.phase == "did") then
+        display.remove(cmt.sprite)
+        display.remove(planet_gr)
+        audio.stop(backgroundMusic)
+    end
+    --background:removeEventListener("touch", soundOfComet)
+end
+
+function scene:destroy(event)
     Runtime:removeEventListener("enterFrame",enterFrame)
     background.bg_1:removeEventListener("touch",controller)
     background.bg_2:removeEventListener("touch",controller)
     display.remove(cmt.sprite)
     display.remove(planet_gr)
     audio.stop(backgroundMusic)
-    --background:removeEventListener("touch", soundOfComet)
 end
 
 scene:addEventListener("create",scene)
 scene:addEventListener("show",scene)
 scene:addEventListener("hide",scene)
+scene:addEventListener("destroy",scene)
 
 
 return scene

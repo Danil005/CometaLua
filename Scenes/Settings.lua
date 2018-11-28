@@ -143,10 +143,22 @@ function scene:hide(event)
     display.remove(title_scene)
 end
 
+function scene:destroy(event)
+    Runtime:removeEventListener("enterFrame",enterFrame)
+    button_back:removeEventListener("touch", backTouch)
+    button_musics_on:removeEventListener("touch", mute_musics)
+    button_musics_off:removeEventListener("touch",mute_musics)
+    button_sounds_on:removeEventListener("touch",mute_sound)
+    button_sounds_off:removeEventListener("touch",mute_sound)
+
+    display.remove(title_scene)
+end
+
 
 
 scene:addEventListener("create",scene)
 scene:addEventListener("show",scene)
 scene:addEventListener("hide",scene)
+scene:addEventListener("destroy",scene)
 
 return scene
