@@ -1,8 +1,10 @@
 local composer = require("composer")
 local json = require("json")
 require("Classes.Comet")
+require("Classes.Animations")
 local scene = composer.newScene()
-
+local background = nil
+local cmt = nil
 local backMusic = nil
 
 local options_for_asteroids =
@@ -31,12 +33,7 @@ function scene:create(event)
         composer.removeScene("Scenes.Shop")
     end
 
-    background3 = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
-    background3.x = display.contentCenterX
-    background3.y = display.contentCenterY
-    background4 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
-    background4.x = display.contentCenterX
-    background4.y = -display.contentCenterY+1
+    background = Background:new(scene_group)
 
     --Установки кнопок на места
     button_settings = display.newImageRect( scene_group,"Sprites/knopka_nastroyki.png", 35,35)
@@ -55,16 +52,7 @@ end
 
 local function enterFrame(event)
     local speed_background = 2
-    if (background3.y <= display.contentCenterY*3-10) then
-        background3.y = background3.y + speed_background
-    else
-        background3.y = -display.contentCenterY
-    end
-    if (background4.y <= display.contentCenterY*3-10) then
-        background4.y = background4.y + speed_background
-    else
-        background4.y = -display.contentCenterY
-    end
+    background:move(speed_background)
 
     if (start_comet and cmt.y < -160) then
         start_comet = false
@@ -115,8 +103,8 @@ function scene:show(event)
     cmt.sprite:scale(cmt.scale, cmt.scale)
     button_settings:addEventListener("touch", settingsTouch)
     button_shop:addEventListener("touch", shopTouch)
-    background3:addEventListener("touch", scoreModeTouch)
-    background4:addEventListener("touch", scoreModeTouch)
+    background.bg_1:addEventListener("touch", scoreModeTouch)
+    background.bg_2:addEventListener("touch", scoreModeTouch)
     Runtime:addEventListener("enterFrame",enterFrame)
     backMusic = audio.loadStream("audio/bgMusicInMenu.mp3")
     audio.play( backMusic)
@@ -128,8 +116,8 @@ function scene:hide(event)
   Runtime:removeEventListener("enterFrame",enterFrame)
   button_settings:removeEventListener("touch", settingsTouch)
   button_shop:removeEventListener("touch",shopTouch)
-  background3:removeEventListener("touch", scoreModeTouch)
-  background4:removeEventListener("touch", scoreModeTouch)
+  background.bg_1:removeEventListener("touch", scoreModeTouch)
+  background.bg_2:removeEventListener("touch", scoreModeTouch)
   audio.stop(backgroundMusic)
 
   display.remove(cmt.sprite)

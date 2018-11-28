@@ -3,17 +3,7 @@ local composer = require("composer")
 local scene = composer.newScene()
 
 local function enterFrame(event)
-    if (background.y <= display.contentCenterY*3-10) then
-        background.y = background.y + speed_background
-    else
-        background.y = -display.contentCenterY
-    end
-
-    if (background2.y <= display.contentCenterY*3-10) then
-        background2.y = background2.y + speed_background
-    else
-        background2.y = -display.contentCenterY
-    end
+  background:move(speed_background)
 end
 
 local function toMenu(event)
@@ -25,12 +15,7 @@ function scene:show(event)
     print(SCORE)
     local scene_group = self.view
     speed_background = 2
-    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY
-    background2 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
-    background2.x = display.contentCenterX
-    background2.y = -display.contentCenterY+1
+    background = Background:new(scene_group)
     local table_after_death = display.newGroup()
     local back = display.newRoundedRect( table_after_death,display.contentCenterX, display.contentCenterY, WIDTH/1.5, HEIGHT/2,10 )
     back:setFillColor(74/255,117/255,247/255)

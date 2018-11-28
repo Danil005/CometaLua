@@ -27,7 +27,6 @@ list_planets[4] = image_sheet_planet4
 local move_x = nil
 local cof = 4 -- Коофицент для получения кол-во очков
 local background = nil
-local background2 = nil
 local cmt = nil
 local speed_comet = 2
 local is_moved = false
@@ -92,9 +91,10 @@ local function generate_planet()
     planet_circles[2] = display.newImageRect(list_planets[form],4,side*2,side*2)
 
     planet_gr = display.newGroup()
-    planet_gr:insert(planet_circles[2])
-    planet_gr:insert(planet_circles[1])
-    planet_gr:insert(planet)
+    planet_gr:insert(2, planet_circles[2])
+    planet_gr:insert(3, planet_circles[1])
+    planet_gr:insert(4, planet)
+    scene_group:insert(3, planet_gr)
     local temp_x = math.random(10,WIDTH-10)
     planet_gr.x = temp_x
     planet_gr.y = -100
@@ -220,28 +220,13 @@ local function enterFrame(event)
             cmt:new_x(WIDTH * 0.90 - cmt.x)
         end
 
-    if (background.y <= display.contentCenterY*3-10) then
-        background.y = background.y + speed_background * 3
-    else
-        background.y = -display.contentCenterY
-    end
-
-    if (background2.y <= display.contentCenterY*3-10) then
-        background2.y = background2.y + speed_background * 3
-    else
-        background2.y = -display.contentCenterY
-    end
+    background:move(speed_background * 3)
 
 end
 
 function scene:create(event)
     local scene_group = self.view
-    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY
-    background2 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
-    background2.x = display.contentCenterX
-    background2.y = -display.contentCenterY+1
+    background = Background:new(scene_group)
 
     local optionsText =
     {
@@ -263,18 +248,18 @@ function scene:show(event)
         cmt:animate("forward")
         cmt.sprite:scale(cmt.scale, cmt.scale)
         Runtime:addEventListener("enterFrame", enterFrame) -- Добавление бесконечного цикла
-        background:addEventListener("touch",controller)
-        background2:addEventListener("touch",controller)
+        background.bg_1:addEventListener("touch",controller)
+        background.bg_2:addEventListener("touch",controller)
 
         --background:addEventListener("touch", playAudio)
     end
-    table.insert(scene_group,table_after_death)
+    table.insert(scene_group, 6, table_after_death)
 end
 
 function scene:hide(event)
     Runtime:removeEventListener("enterFrame",enterFrame)
-    background:removeEventListener("touch",controller)
-    background2:removeEventListener("touch",controller)
+    background.bg_1:removeEventListener("touch",controller)
+    background.bg_2:removeEventListener("touch",controller)
     display.remove(cmt.sprite)
     display.remove(planet_gr)
     audio.stop(backgroundMusic)

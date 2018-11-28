@@ -10,8 +10,6 @@ local soundOfButton = audio.loadSound("audio/buttonsInMenu.mp3")
 local button_back = nil
 local speed_background = 2
 local background = nil
-local background2 = nil
-
 
 local function backTouch(event)
     if(event.phase == "began") then
@@ -41,27 +39,13 @@ local function scrollListener( event )
 end
 
 local function enterFrame(event)
-
-    if (background.y <= display.contentCenterY*3-10) then
-        background.y = background.y + speed_background
-    else
-        background.y = -display.contentCenterY
-    end
-    if (background2.y <= display.contentCenterY*3-10) then
-        background2.y = background2.y + speed_background
-    else
-        background2.y = -display.contentCenterY
-    end
+    background:move(speed_background)
 end
+
 function scene:create(event)
     local scene_group = self.view
 
-    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY
-    background2 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
-    background2.x = display.contentCenterX
-    background2.y = -display.contentCenterY+1
+    background = Background:new(scene_group)
 
     button_back = display.newImageRect( scene_group, "Sprites/knopka_nazad.png", 25,35)
     button_back.x = display.contentWidth - 270
@@ -132,8 +116,8 @@ function scene:show(event)
       title_scene.anchorX = 0
 
       Runtime:addEventListener("enterFrame", enterFrame) -- Добавление бесконечного цикла
-      background:addEventListener("touch", moving)
-      background2:addEventListener("touch", moving)
+      background.bg_1:addEventListener("touch", moving)
+      background.bg_2:addEventListener("touch", moving)
     end
 end
 
@@ -141,8 +125,8 @@ end
 function scene:hide(event)
     Runtime:removeEventListener("enterFrame",enterFrame)
     button_back:removeEventListener("touch", backTouch)
-    background:removeEventListener("touch", moving)
-    background2:removeEventListener("touch", moving)
+    background.bg_1:removeEventListener("touch", moving)
+    background.bg_2:removeEventListener("touch", moving)
     display.remove(title_scene)
 end
 
