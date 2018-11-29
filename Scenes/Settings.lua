@@ -16,7 +16,6 @@ local is_mute_musics = false
 local is_mute_sounds = false
 local speed_background = 2
 local background = nil
-local background2 = nil
 
 function save_settings()
    local saveGame = {}
@@ -74,31 +73,13 @@ end
 
 local function enterFrame(event)
 
-    if (background.y <= display.contentCenterY*3-10) then
-        background.y = background.y + speed_background
-    else
-        background.y = -display.contentCenterY
-    end
-    if (background2.y <= display.contentCenterY*3-10) then
-        background2.y = background2.y + speed_background
-    else
-        background2.y = -display.contentCenterY
-    end
+    background:move(speed_background)
 end
 function scene:create(event)
     local scene_group = self.view
     composer.removeScene("Scenes.Menu")
 
-    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY
-    background2 = display.newImageRect(scene_group,"Sprites/backgroundReverse.png",display.contentWidth,display.contentHeight)
-    background2.x = display.contentCenterX
-    background2.y = -display.contentCenterY+1
-
-    background = display.newImageRect( scene_group, "Sprites/background.png",display.contentWidth,display.contentHeight)
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY
+    background = Background:new(scene_group)
 
     button_back = display.newImageRect( scene_group, "Sprites/knopka_nazad.png", 25,35)
     button_back.x = display.contentWidth - 270
@@ -162,10 +143,22 @@ function scene:hide(event)
     display.remove(title_scene)
 end
 
+function scene:destroy(event)
+    Runtime:removeEventListener("enterFrame",enterFrame)
+    button_back:removeEventListener("touch", backTouch)
+    button_musics_on:removeEventListener("touch", mute_musics)
+    button_musics_off:removeEventListener("touch",mute_musics)
+    button_sounds_on:removeEventListener("touch",mute_sound)
+    button_sounds_off:removeEventListener("touch",mute_sound)
+
+    display.remove(title_scene)
+end
+
 
 
 scene:addEventListener("create",scene)
 scene:addEventListener("show",scene)
 scene:addEventListener("hide",scene)
+scene:addEventListener("destroy",scene)
 
 return scene
