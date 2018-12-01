@@ -71,9 +71,9 @@ function scene:create(event)
     button_shop.x = 265
     button_shop.y = 85
 
-    button_start = display.newImageRect(scene_group, "Sprites/tap_to_start.png",WIDTH/2,HEIGHT/12)
+    button_start = display.newImageRect(scene_group, "Sprites/tap_to_start.png",WIDTH/2,HEIGHT/16)
     button_start.x = display.contentCenterX
-    button_start.y = display.contentCenterY * 1.8
+    button_start.y = display.contentCenterY * 1.9
     -- button_score_mode = display.newImageRect( scene_group,"Sprites/rezhim_vyzhivanie.png", 205,45)
 end
 

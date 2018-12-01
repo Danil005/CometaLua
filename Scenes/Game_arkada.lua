@@ -161,7 +161,7 @@ local function enterFrame(event)
 
     if (planet == nil) then
         generate_planet()
-        gravity_planet = Gravity:new(planet_gr.x,planet_gr.y,{planet_radius*1.4,3},{planet_radius*2.2,2})
+        gravity_planet = Gravity:new(planet_gr.x,planet_gr.y,{planet_radius*1.4,3},{planet_radius*2.2,1.6})
     elseif (cmt ~= nil) then
         movement = gravity_planet:gravity_2(cmt.x,cmt.y)
         planet_gr.y = planet_gr.y + movement[2] + speed_planets
