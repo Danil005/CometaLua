@@ -82,24 +82,24 @@ function scene:create(event)
     background = Background:new(scene_group)
 
     button_back = display.newImageRect( scene_group, "Sprites/knopka_nazad.png", 25,35)
-    button_back.x = display.contentWidth - 270
-    button_back.y = display.contentHeight - 450
+    button_back.x = 25
+    button_back.y = 35
 
     button_musics_on = display.newImageRect( scene_group, "Sprites/knopka_muzyka.png", 60,61)
-    button_musics_on.x = display.contentCenterX - 40
+    button_musics_on.x = display.contentCenterX - 60
     button_musics_on.y = display.contentCenterY
 
     button_musics_off = display.newImageRect(scene_group,"Sprites/knopka_net_muzyka.png", 60,61)
-    button_musics_off.x = display.contentCenterX - 40
+    button_musics_off.x = display.contentCenterX - 60
     button_musics_off.y = display.contentCenterY
     button_musics_off.alpha = 0
 
     button_sounds_on = display.newImageRect( scene_group, "Sprites/knopka_zvuk.png", 60,61)
-    button_sounds_on.x = display.contentCenterX + 40
+    button_sounds_on.x = display.contentCenterX
     button_sounds_on.y = display.contentCenterY
 
     button_sounds_off = display.newImageRect( scene_group, "Sprites/knopka_net_zvuka.png", 60,61)
-    button_sounds_off.x = display.contentCenterX + 40
+    button_sounds_off.x = display.contentCenterX
     button_sounds_off.y = display.contentCenterY
     button_sounds_off.alpha = 0
 

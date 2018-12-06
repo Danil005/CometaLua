@@ -32,11 +32,11 @@ function Background:move(y)
   self.bg_2.y = self.bg_2.y + y
   if (self.bg_1.y - display.contentHeight >= display.contentCenterY) then
     self.bg_1.x = display.contentCenterX
-    self.bg_1.y = self.bg_2.y - display.contentHeight
+    self.bg_1.y = self.bg_2.y - display.contentHeight + 1
   end
   if (self.bg_2.y - display.contentHeight >= display.contentCenterY) then
     self.bg_2.x = display.contentCenterX
-    self.bg_2.y = self.bg_1.y - display.contentHeight
+    self.bg_2.y = self.bg_1.y - display.contentHeight + 1
   end
 end
 
@@ -73,7 +73,6 @@ function Asteroid:new(x, y)
   end
 
 function Asteroid:animate(command)
-  print(self.sprite.y)
     local function mySpriteListener( event )
 
          if ( event.phase == "ended" ) then
@@ -85,7 +84,6 @@ function Asteroid:animate(command)
     self.sprite:setSequence(command)
     self.sprite:play()
     self.sprite:addEventListener("sprite", mySpriteListener)
-
   end
 
 function Asteroid:get_pos()
@@ -93,9 +91,6 @@ function Asteroid:get_pos()
     print(self.poses_list[i])
   end
 end
-
---local comet = display.newSprite(forward_comet_sheet, comet_data);
--- return scene
 
 function Asteroid:move(x, y)
 if (self.sprite ~= nil) then
@@ -108,8 +103,6 @@ function Asteroid:set_position(x, y)
   self.sprite.x = x
   self.sprite.y = y
 end
-
-
 
 
 function Loading:new(x, y, size)
@@ -143,4 +136,3 @@ end
 function Button:next_frame()
   self.image.alpha = self.image.alpha * 0.7
 end
---timer.performWithDelay( 1000, display.remove(test_boom.sprite))

@@ -8,6 +8,12 @@ require("Classes.Animations")
 local background = nil
 local cmt = nil
 local backMusic = nil
+local text_tap_to_start = nil
+local button_settings = nil
+local button_shop = nil
+
+local back_layer = nil
+local front_layer = nil
 
 local options_for_asteroids =
 {
@@ -62,19 +68,36 @@ function scene:create(event)
 
     background = Background:new(scene_group)
 
+    front_layer = display.newGroup()
+    back_layer = display.newGroup()
+
+    back_layer:insert(background.bg_1)
+    back_layer:insert(background.bg_2)
+
     --Установки кнопок на места
-    button_settings = display.newImageRect( scene_group,"Sprites/knopka_nastroyki.png", 35,35)
-    button_settings.x = 265
-    button_settings.y = 30
+    button_settings = display.newImageRect(front_layer,"Sprites/knopka_nastroyki.png", WIDTH*0.15,WIDTH*0.15)
+    button_settings.x = WIDTH*0.9
+    button_settings.y = HEIGHT*0.05
 
-    button_shop = display.newImageRect(scene_group,"Sprites/shop/shop_icon.png",35,35)
-    button_shop.x = 265
-    button_shop.y = 85
+    button_shop = display.newImageRect(front_layer,"Sprites/shop/shop_icon.png",WIDTH*0.15,WIDTH*0.15)
+    button_shop.x = WIDTH*0.9
+    button_shop.y = HEIGHT*0.15
 
-    button_start = display.newImageRect(scene_group, "Sprites/tap_to_start.png",WIDTH/2,HEIGHT/16)
-    button_start.x = display.contentCenterX
-    button_start.y = display.contentCenterY * 1.9
+    -- button_start = display.newImageRect(scene_group, "Sprites/tap_to_start.png",WIDTH/2,HEIGHT/16)
+    -- button_start.x = display.contentCenterX
+    -- button_start.y = display.contentCenterY * 1.9
     -- button_score_mode = display.newImageRect( scene_group,"Sprites/rezhim_vyzhivanie.png", 205,45)
+    text_tap_to_start = display.newText({
+        parent = front_layer,
+        text = "TAP TO START",
+        x = display.contentCenterX,
+        y = HEIGHT * 0.95,
+        width = WIDTH / 1.5,
+        font = native.systemFont,
+        fontSize = 24*resize_Font
+    })
+    scene_group:insert(back_layer)
+    scene_group:insert(front_layer)
 end
 
 function scene:show(event)
